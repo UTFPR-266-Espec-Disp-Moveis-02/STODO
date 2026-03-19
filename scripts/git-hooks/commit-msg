@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Commit-msg hook to enforce conventional commits
+commit_msg_file=$1
+commit_msg=$(cat "$commit_msg_file")
+
+# Pattern for conventional commits: type(scope)!: description
+# Types: feat, fix, chore, docs, style, refactor, perf, test
+# pattern="^(feat|fix|chore|docs|style|refactor|perf|test)(\(.*\))?(!)?:"
+# Let's use a simpler regex for easier validation in bash
+pattern="^(feat|fix|chore|docs|style|refactor|perf|test)(\(.*\))?(!)?:[[:space:]].*"
+
+if [[ ! $commit_msg =~ $pattern ]]; then
+  echo ""
+  echo "❌ Erro: Mensagem de commit fora do padrão!"
+  echo ""
+  echo "O padrão esperado é: <tipo>(escopo): <descrição>"
+  echo ""
+  echo "🚀 Exemplos:"
+  echo "  feat: adiciona nova funcionalidade de login"
+  echo "  fix(db): corrige erro de conexão"
+  echo "  chore: atualiza dependências"
+  echo ""
+  echo "📋 Tipos permitidos: feat, fix, chore, docs, style, refactor, perf, test"
+  echo "💡 Dica: Use '!' após o tipo para indicar BREAKING CHANGES (Ex: feat!: ...)"
+  echo ""
+  exit 1
+fi
+
+exit 0

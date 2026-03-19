@@ -124,6 +124,28 @@ lib/
 
 ---
 
+## 🛠️ Configuração do Projeto
+
+### ⚓ Git Hooks e Padronização de Commits
+Este projeto utiliza **Git Hooks** para garantir a qualidade do código e o versionamento semântico automático.
+
+#### Como configurar:
+1. No terminal, na raiz do projeto, execute o script de instalação:
+   ```bash
+   chmod +x scripts/install-hooks.sh
+   ./scripts/install-hooks.sh
+   ```
+
+#### Regras de Commit:
+- **Branch Protection:** Não é permitido fazer commits diretamente na branch `main`. Utilize branches de funcionalidade (ex: `feat/minha-feature`).
+- **Conventional Commits:** As mensagens de commit devem seguir o padrão `<tipo>(escopo): <descrição>`.
+  - `feat`: Nova funcionalidade (gera **Minor** version bump).
+  - `fix`: Correção de bug (gera **Patch** version bump).
+  - `chore`, `docs`, `style`, `refactor`, `perf`, `test`: Outras alterações (gera **Patch** version bump).
+  - Adicione `!` após o tipo para **BREAKING CHANGES** (gera **Major** version bump).
+
+---
+
 ## 📅 Planejamento de Sprints (Roadmap MVP)
 
 ### Sprint 1: Fundação & Estrutura (23/03 - 03/04)
