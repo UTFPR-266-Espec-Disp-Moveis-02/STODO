@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app/design_system/design_system_page.dart';
+import 'app/base_page.dart';
 import 'core/themes/theme_exports.dart';
 
 void main() {
@@ -12,11 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'STodo Design System',
+      title: 'STodo',
       theme: AppDarkTheme.darkTheme,
       darkTheme: AppDarkTheme.darkTheme,
       themeMode: ThemeMode.dark,
-      home: const DesignSystemPage(),
+      home: const BasePage(),
     );
   }
 }
