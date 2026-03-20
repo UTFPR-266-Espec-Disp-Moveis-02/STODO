@@ -133,7 +133,10 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 children: [
                   Icon(Icons.smart_button),
                   SizedBox(width: AppSpacing.s8),
-                  Text('Botões', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Botões',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
@@ -230,7 +233,10 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 children: [
                   Icon(Icons.folder),
                   SizedBox(width: AppSpacing.s8),
-                  Text('Cards de Tópico', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Cards de Tópico',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               initiallyExpanded: true,
@@ -285,7 +291,10 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 children: [
                   Icon(Icons.library_books),
                   SizedBox(width: AppSpacing.s8),
-                  Text('Cards de Livro', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Cards de Livro',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               initiallyExpanded: true,
@@ -325,7 +334,10 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 children: [
                   Icon(Icons.view_list),
                   SizedBox(width: AppSpacing.s8),
-                  Text('Lista de Livros', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Lista de Livros',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               initiallyExpanded: true,
