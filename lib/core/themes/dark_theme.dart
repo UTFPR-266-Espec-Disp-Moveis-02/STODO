@@ -266,6 +266,26 @@ class AppDarkTheme {
           return AppColors.primaryDarkAccent;
         }),
       ),
+
+      // TabBar theme
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: AppColors.primary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: AppColors.primaryDarkAccent,
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.gray200,
+        indicator: const UnderlineTabIndicator(
+          borderSide: BorderSide(width: 3.0, color: AppColors.primary),
+        ),
+        labelStyle: GoogleFonts.lexend(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: GoogleFonts.lexend(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }
