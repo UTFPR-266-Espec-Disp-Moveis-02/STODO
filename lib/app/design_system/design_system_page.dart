@@ -40,9 +40,16 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
         child: Column(
           children: [
             ExpansionTile(
-              title: const Text(
-                '🎨 Formulários & Inputs',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.edit_note),
+                  SizedBox(width: AppSpacing.s8),
+                  Text(
+                    'Formulários & Inputs',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
@@ -79,9 +86,16 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
             ),
             const Divider(height: 1),
             ExpansionTile(
-              title: const Text(
-                '🖱️ Seletores',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.color_lens),
+                  SizedBox(width: AppSpacing.s8),
+                  Text(
+                    'Seletores',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
@@ -114,9 +128,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
             ),
             const Divider(height: 1),
             ExpansionTile(
-              title: const Text(
-                '🕹️ Botões',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.smart_button),
+                  SizedBox(width: AppSpacing.s8),
+                  Text('Botões', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
@@ -207,9 +225,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
             ),
             const Divider(height: 1),
             ExpansionTile(
-              title: const Text(
-                '🗂️ Cards de Tópico',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.folder),
+                  SizedBox(width: AppSpacing.s8),
+                  Text('Cards de Tópico', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
               ),
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
@@ -258,9 +280,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
             ),
             const Divider(height: 1),
             ExpansionTile(
-              title: const Text(
-                '📚 Cards de Livro',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.library_books),
+                  SizedBox(width: AppSpacing.s8),
+                  Text('Cards de Livro', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
               ),
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
@@ -294,9 +320,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
             ),
             const Divider(height: 1),
             ExpansionTile(
-              title: const Text(
-                '📚 Lista de Livros',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.view_list),
+                  SizedBox(width: AppSpacing.s8),
+                  Text('Lista de Livros', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
               ),
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
