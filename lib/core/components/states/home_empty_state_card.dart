@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
-import 'dashed_border_painter.dart';
+import '../form/dashed_border_painter.dart';
 
 class HomeEmptyStateCard extends StatelessWidget {
   final IconData icon;

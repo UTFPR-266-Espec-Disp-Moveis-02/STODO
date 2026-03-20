@@ -1,24 +1,26 @@
-import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/components/animated_grid_view.dart';
-import '../../core/components/book_card.dart';
-import '../../core/components/book_list_card.dart';
-import '../../core/components/color_selector.dart';
-import '../../core/components/custom_dropdown.dart';
-import '../../core/components/custom_outline_button.dart';
-import '../../core/components/custom_text_field.dart';
-import '../../core/components/home_empty_state_card.dart';
-import '../../core/components/icon_selector.dart';
-import '../../core/components/image_upload_field.dart';
-import '../../core/components/primary_button.dart';
-import '../../core/components/progress_updater.dart';
-import '../../core/components/current_reading_card.dart';
-import '../../core/components/skeletons/skeleton.dart';
-import '../../core/components/skeletons/topic_card_skeleton.dart';
-import '../../core/components/app_logo.dart';
-
-import '../../core/components/topic_card.dart';
+import '../../core/components/assets/app_logo.dart';
+import '../../core/components/assets/app_logo_horizontal.dart';
+import '../../core/components/buttons/custom_outline_button.dart';
+import '../../core/components/buttons/primary_button.dart';
+import '../../core/components/cards/book_card.dart';
+import '../../core/components/cards/book_list_card.dart';
+import '../../core/components/cards/current_reading_card.dart';
+import '../../core/components/cards/topic_card.dart';
+import '../../core/components/form/color_selector.dart';
+import '../../core/components/form/custom_dropdown.dart';
+import '../../core/components/form/custom_text_field.dart';
+import '../../core/components/form/icon_selector.dart';
+import '../../core/components/form/image_upload_field.dart';
+import '../../core/components/form/progress_updater.dart';
+import '../../core/components/layout/animated_grid_view.dart';
+import '../../core/components/states/full_empty_state.dart';
+import '../../core/components/states/home_empty_state_card.dart';
+import '../../core/components/states/skeletons/skeleton.dart';
+import '../../core/components/states/skeletons/topic_card_skeleton.dart';
+import '../../core/themes/theme_exports.dart';
+import 'section_header.dart';
 
 class DesignSystemPage extends StatefulWidget {
   const DesignSystemPage({super.key});
@@ -46,6 +48,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SectionHeader('Componentes Básicos'),
             ExpansionTile(
               title: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -240,6 +243,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ],
             ),
             const Divider(height: 1),
+            const SectionHeader('Tópicos'),
             ExpansionTile(
               title: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -297,6 +301,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ],
             ),
             const Divider(height: 1),
+            const SectionHeader('Livros'),
             ExpansionTile(
               title: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -405,6 +410,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ],
             ),
             const Divider(height: 1),
+            const SectionHeader('Branding & Assets'),
             ExpansionTile(
               title: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -438,16 +444,44 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 ),
                 const SizedBox(height: AppSpacing.s16),
                 const Center(child: AppLogoHorizontal(height: 60)),
-                const SizedBox(height: AppSpacing.s32),
+              ],
+            ),
+            const Divider(height: 1),
+            const SectionHeader('Estados & Feedback'),
+            ExpansionTile(
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.layers_clear),
+                  SizedBox(width: AppSpacing.s8),
+                  Text(
+                    'Empty States',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
+              children: [
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Empty State Image (Full)',
+                    'Full Empty State (Dash/Home)',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s16),
-                const Center(child: AppEmptyStateImage(height: 150)),
+                Container(
+                  color: AppColors.primaryDark,
+                  child: FullEmptyState(
+                    title: 'Sua jornada de estudos\ncomeça aqui',
+                    subtitle:
+                        'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
+                    primaryButtonText: 'Cadastrar Livro',
+                    onPrimaryPressed: () {},
+                    outlineButtonText: 'Criar Tópico',
+                    onOutlinePressed: () {},
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.s32),
                 const Align(
                   alignment: Alignment.centerLeft,

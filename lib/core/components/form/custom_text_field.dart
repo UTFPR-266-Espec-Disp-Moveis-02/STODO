@@ -11,6 +11,8 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final TextAlign textAlign;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
 
   const CustomTextField({
     super.key,
@@ -23,6 +25,8 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.keyboardType,
     this.textAlign = TextAlign.start,
+    this.onChanged,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -44,6 +48,14 @@ class CustomTextField extends StatelessWidget {
           validator: validator,
           keyboardType: keyboardType,
           textAlign: textAlign,
+          onChanged: onChanged,
+          onFieldSubmitted: onFieldSubmitted,
+          onTapOutside: (event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (onFieldSubmitted != null && controller != null) {
+              onFieldSubmitted!(controller!.text);
+            }
+          },
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(color: AppColors.light),
