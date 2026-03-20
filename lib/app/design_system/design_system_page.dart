@@ -11,6 +11,8 @@ import '../../core/components/custom_text_field.dart';
 import '../../core/components/icon_selector.dart';
 import '../../core/components/image_upload_field.dart';
 import '../../core/components/primary_button.dart';
+import '../../core/components/progress_updater.dart';
+import '../../core/components/current_reading_card.dart';
 import '../../core/components/skeletons/skeleton.dart';
 import '../../core/components/skeletons/topic_card_skeleton.dart';
 
@@ -310,6 +312,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
+                CurrentReadingCard(
+                  title: 'Project Hail Mary',
+                  author: 'Andy Weir',
+                  progress: 0.74,
+                  onTap: () {},
+                ),
+                const SizedBox(height: AppSpacing.s16),
                 SizedBox(
                   height:
                       280, // Altura do container para acomodar a lista horizontal
@@ -353,6 +362,14 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
+                ProgressUpdater(
+                  currentValue: 352,
+                  maxValue: 476,
+                  onChanged: (val) {
+                    debugPrint('Novo progresso: $val');
+                  },
+                ),
+                const SizedBox(height: AppSpacing.s16),
                 BookListCard(
                   title: 'O Senhor dos Anéis',
                   author: 'J.R.R. Tolkien',
