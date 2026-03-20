@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stodo/core/themes/theme_exports.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -22,16 +23,34 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: AppColors.light,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s8),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          validator: validator,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.light),
+          decoration: InputDecoration(
+            hintText: hint ?? 'Ex: $label',
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.gray300),
+          ),
+        ),
+      ],
     );
   }
 }
