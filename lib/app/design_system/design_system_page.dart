@@ -8,6 +8,7 @@ import '../../core/components/color_selector.dart';
 import '../../core/components/custom_dropdown.dart';
 import '../../core/components/custom_outline_button.dart';
 import '../../core/components/custom_text_field.dart';
+import '../../core/components/home_empty_state_card.dart';
 import '../../core/components/icon_selector.dart';
 import '../../core/components/image_upload_field.dart';
 import '../../core/components/primary_button.dart';
@@ -441,12 +442,36 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Empty State',
+                    'Empty State Image (Full)',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s16),
                 const Center(child: AppEmptyStateImage(height: 150)),
+                const SizedBox(height: AppSpacing.s32),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Home Empty States (Cards)',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                HomeEmptyStateCard(
+                  icon: Icons.menu_book,
+                  title: 'Nenhum livro sendo lido agora',
+                  buttonText: 'Adicionar Livro',
+                  onPressed: () {},
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                HomeEmptyStateCard(
+                  icon: Icons.menu_book,
+                  title: 'Você ainda não criou tópicos',
+                  subtitle:
+                      'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
+                  buttonText: 'Criar Tópico',
+                  onPressed: () {},
+                ),
               ],
             ),
             const Divider(height: 1),
