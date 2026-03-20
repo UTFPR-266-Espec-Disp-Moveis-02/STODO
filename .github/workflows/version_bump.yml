@@ -17,11 +17,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Importante: Usar um PAT se quiser que a tag disparada aqui inicie o workflow de Release
+          # token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Bump version
         id: bump_version
         run: |
-          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          # Pega a mensagem do último commit
+          COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Commit message: $COMMIT_MSG"
           
           VERSION_LINE=$(grep "^version: " pubspec.yaml)
@@ -38,15 +41,18 @@ jobs:
           PATCH=${ADDR[2]}
           
           # Lógica de Versionamento Semântico
-          if [[ "$COMMIT_MSG" == *"!:"* ]] || [[ "$COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
+          # Se tiver '!' após o tipo ou 'BREAKING CHANGE' no corpo do commit -> MAJOR
+          if [[ "$COMMIT_MSG" =~ [a-zA-Z0-9]+\(!?\): ]] || [[ "$COMMIT_MSG" =~ [a-zA-Z0-9]+!: ]] || [[ "$COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
             echo "Detectada BREAKING CHANGE. Incrementando MAJOR version."
             MAJOR=$((MAJOR + 1))
             MINOR=0
             PATCH=0
-          elif [[ "$COMMIT_MSG" == feat* ]]; then
+          # Se começar com 'feat' -> MINOR
+          elif [[ "$COMMIT_MSG" =~ ^feat(\(.*\))?: ]]; then
             echo "Detectada nova funcionalidade. Incrementando MINOR version."
             MINOR=$((MINOR + 1))
             PATCH=0
+          # Caso contrário (fix, chore, docs, etc) -> PATCH
           else
             echo "Detectada correção ou alteração menor. Incrementando PATCH version."
             PATCH=$((PATCH + 1))
@@ -64,7 +70,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add pubspec.yaml
-          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.full_version }}"
+          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.full_version }} [skip ci]"
           git push
           
       - name: Create and push tag

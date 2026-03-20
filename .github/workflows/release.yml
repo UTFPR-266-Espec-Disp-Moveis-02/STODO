@@ -21,21 +21,54 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Changelog
+      - name: Get Tag Name
+        id: tag_name
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Semantic Changelog
         id: changelog
         run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${{ github.ref_name }}^ 2>/dev/null || echo "")
-          if [ -z "$PREVIOUS_TAG" ]; then
-            # Se não houver tag anterior, pega todos os commits
-            CHANGELOG=$(git log --oneline --pretty=format:"- %s")
-          else
-            CHANGELOG=$(git log $PREVIOUS_TAG..${{ github.ref_name }} --oneline --pretty=format:"- %s")
+          TAG="${{ steps.tag_name.outputs.tag }}"
+          # Tenta encontrar a tag anterior
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "Gerando changelog de $PREVIOUS_TAG até $TAG"
+          
+          # Coleta os commits e agrupa por tipo
+          COMMITS=$(git log "$PREVIOUS_TAG..$TAG" --oneline --pretty=format:"%s")
+          
+          FEATURES=$(echo "$COMMITS" | grep -E "^feat(\(.*\))?(!)?:" || true)
+          FIXES=$(echo "$COMMITS" | grep -E "^fix(\(.*\))?(!)?:" || true)
+          BREAKING=$(echo "$COMMITS" | grep -E "(!:)|(BREAKING CHANGE)" || true)
+          OTHERS=$(echo "$COMMITS" | grep -vE "^(feat|fix)(\(.*\))?(!)?:" || true)
+          
+          CHANGELOG="## 🚀 O que mudou na versão $TAG\n\n"
+          
+          if [ ! -z "$BREAKING" ]; then
+            CHANGELOG="$CHANGELOG### ⚠️ BREAKING CHANGES\n$BREAKING\n\n"
           fi
           
-          # Escapa quebras de linha para o GITHUB_ENV
-          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-          echo "$CHANGELOG" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          if [ ! -z "$FEATURES" ]; then
+            CHANGELOG="$CHANGELOG### ✨ Novas Funcionalidades\n$FEATURES\n\n"
+          fi
+          
+          if [ ! -z "$FIXES" ]; then
+            CHANGELOG="$CHANGELOG### 🐛 Correções\n$FIXES\n\n"
+          fi
+          
+          if [ ! -z "$OTHERS" ]; then
+            CHANGELOG="$CHANGELOG### 🛠️ Outras Alterações\n$OTHERS\n\n"
+          fi
+          
+          # Escapa quebras de linha para o GITHUB_ENV usando um delimitador aleatório
+          EOF_DELIMITER=$(dd if=/dev/urandom bs=15 count=1 2>/dev/null | base64 | tr -dc 'a-zA-Z0-9')
+          echo "CHANGELOG<<$EOF_DELIMITER" >> $GITHUB_ENV
+          echo -e "$CHANGELOG" >> $GITHUB_ENV
+          echo "$EOF_DELIMITER" >> $GITHUB_ENV
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -53,11 +86,9 @@ jobs:
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          name: Release ${{ github.event.inputs.tag || github.ref_name }}
-          body: |
-            ## O que mudou nesta versão
-            ${{ env.CHANGELOG }}
+          tag_name: ${{ steps.tag_name.outputs.tag }}
+          name: Release ${{ steps.tag_name.outputs.tag }}
+          body: ${{ env.CHANGELOG }}
           files: build/app/outputs/flutter-apk/app-release.apk
           draft: false
           prerelease: false
