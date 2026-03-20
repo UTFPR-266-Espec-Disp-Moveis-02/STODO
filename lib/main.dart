@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/themes/theme_exports.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: AppDarkTheme.darkTheme,
+      darkTheme: AppDarkTheme.darkTheme,
+      themeMode: ThemeMode.dark,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -53,6 +56,17 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Bottom Navigation Bar',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
