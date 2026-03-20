@@ -54,12 +54,12 @@ class _BasePageState extends State<BasePage> {
           BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Topics'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
+            icon: Icon(Icons.book),
             label: 'Library',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.design_services),
-            label: 'System',
+            label: 'Des. System',
           ),
         ],
       ),

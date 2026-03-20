@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
 
+/// Um campo de texto customizado padronizado para o aplicativo STODO.
+///
+/// Este componente empacota um [TextFormField] padrão do Flutter, adicionando 
+/// estilos globais, suporte a label superior e comportamento automático de
+/// fechamento do teclado ao tocar fora do campo ([onTapOutside]).
+/// 
+/// Ideal para formulários, configurações e áreas de input ao longo do app.
 class CustomTextField extends StatelessWidget {
   final String label;
   final String? hint;
