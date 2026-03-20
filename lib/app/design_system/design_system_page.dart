@@ -134,8 +134,32 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 Row(
                   children: [
                     Expanded(
+                      child: PrimaryButton(
+                        text: 'With Icon',
+                        icon: const Icon(Icons.check, size: 20),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                Row(
+                  children: [
+                    Expanded(
                       child: CustomOutlineButton(
                         text: 'Outline Button',
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomOutlineButton(
+                        text: 'With Icon',
+                        icon: const Icon(Icons.add, size: 20),
                         onPressed: () {},
                       ),
                     ),
