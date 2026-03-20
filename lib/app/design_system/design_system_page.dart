@@ -9,6 +9,7 @@ import '../../core/components/custom_dropdown.dart';
 import '../../core/components/custom_outline_button.dart';
 import '../../core/components/custom_text_field.dart';
 import '../../core/components/icon_selector.dart';
+import '../../core/components/image_upload_field.dart';
 import '../../core/components/primary_button.dart';
 
 import '../../core/components/topic_card.dart';
@@ -80,6 +81,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     setState(() {
                       _dropdownValue = value;
                     });
+                  },
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                ImageUploadField(
+                  label: 'Capa do Livro',
+                  onImageSelected: (path) {
+                    debugPrint('Capa selecionada: $path');
                   },
                 ),
               ],
