@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
 
+/// Botão principal (Primary Action) do sistema STODO.
+///
+/// Componente altamente reutilizável que aplica a cor primária global da marca
+/// e possui suporte unificado para ícones e estado de progresso ([isLoading]).
+/// Utilize-o para ações de confirmação e continuação vitais na jornada do sistema.
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;

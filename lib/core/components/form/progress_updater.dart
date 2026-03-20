@@ -3,6 +3,11 @@ import 'package:stodo/core/themes/theme_exports.dart';
 
 import 'custom_text_field.dart';
 
+/// Componente para rastrear o progresso e atualizar rapidamente as páginas de um livro lido.
+///
+/// Este widget exibe botões rápidos de `+1` ou `-1` página, além de permitir o
+/// preenchimento manual massivo através de um dropdown numérico ([CustomTextField]).
+/// Um dos core features do STODO na melhoria do input de leitura.
 class ProgressUpdater extends StatefulWidget {
   final int currentValue;
   final int maxValue;

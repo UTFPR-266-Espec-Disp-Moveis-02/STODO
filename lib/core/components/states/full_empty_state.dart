@@ -4,6 +4,13 @@ import '../assets/app_empty_state_image.dart';
 import '../buttons/primary_button.dart';
 import '../buttons/custom_outline_button.dart';
 
+/// Uma visualização de tela cheia para representar o estado "vazio" (Empty State).
+///
+/// Este componente é ideal para preencher telas principais do aplicativo que ainda
+/// não possuem dados cadastrados, como a Dashboard ou a Home.
+///
+/// Ele exibe nativamente a imagem de ilustração vazia ([AppEmptyStateImage]),
+/// título, subtítulo e duas ações (Botão Primário e Botão Outline).
 class FullEmptyState extends StatelessWidget {
   final String title;
   final String subtitle;

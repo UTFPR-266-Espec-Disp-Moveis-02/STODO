@@ -2,6 +2,11 @@ import 'package:stodo/core/themes/theme_exports.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
+/// Card compacto para exibição da capa de um livro junto com o seu progresso de leitura.
+///
+/// Este widget carrega a imagem do sistema de arquivos usando `File()` (caso [imagePath] for provido)
+/// ou exibe um container padrão caso seja uma capa vazia. Muito utilizado
+/// no carrossel "Continue Lendo" na Dashboard.
 class BookCard extends StatelessWidget {
   final String? imagePath;
   final String title;

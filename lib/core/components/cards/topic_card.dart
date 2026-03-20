@@ -1,6 +1,12 @@
 import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
 
+/// Card para representação de um Tópico de estudo (ex: "Programação", "Direito").
+///
+/// Mostra visualmente um Tópico contendo ícone estilizado com a cor escolhida pelo
+/// usuário, o nome do Tópico, quantidade de recursos e a barra de progresso.
+///
+/// Utilizado predominantemente nas telas de Listagem de Tópicos e Dashboard.
 class TopicCard extends StatelessWidget {
   final IconData icon;
   final Color color;

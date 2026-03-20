@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
 import '../form/dashed_border_painter.dart';
 
+/// Um pequeno Card de estado vazio desenhado especificamente para a Dashboard.
+///
+/// Ele inclui uma borda tracejada envolta usando um [CustomPainter]
+/// ([DashedBorderPainter]), fornecendo uma indicação visual amigável
+/// e incentivando o usuário a interagir ("clique para adicionar").
+///
+/// Geralmente usado para carrosséis vazios (ex: Meus Livros, Meus Tópicos).
 class HomeEmptyStateCard extends StatelessWidget {
   final IconData icon;
   final String title;
