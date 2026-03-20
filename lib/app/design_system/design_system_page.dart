@@ -11,6 +11,8 @@ import '../../core/components/custom_text_field.dart';
 import '../../core/components/icon_selector.dart';
 import '../../core/components/image_upload_field.dart';
 import '../../core/components/primary_button.dart';
+import '../../core/components/skeletons/skeleton.dart';
+import '../../core/components/skeletons/topic_card_skeleton.dart';
 
 import '../../core/components/topic_card.dart';
 
@@ -384,6 +386,70 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   status: BookStatus.wantToRead,
                   onTap: () {},
                   onRemove: () {},
+                ),
+              ],
+            ),
+            const Divider(height: 1),
+            ExpansionTile(
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.hourglass_empty),
+                  SizedBox(width: AppSpacing.s8),
+                  Text(
+                    'Loading & Skeletons',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Esqueletos Básicos',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Skeleton(
+                      width: 60,
+                      height: 60,
+                      shape: BoxShape.circle,
+                    ),
+                    const SizedBox(width: AppSpacing.s16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Skeleton(height: 20, width: double.infinity),
+                          SizedBox(height: AppSpacing.s8),
+                          Skeleton(height: 14, width: 150),
+                          SizedBox(height: AppSpacing.s8),
+                          Skeleton(height: 12, width: 100),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s32),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Topic Card Skeleton',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                AnimatedGridView(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.0,
+                  children: const [TopicCardSkeleton(), TopicCardSkeleton()],
                 ),
               ],
             ),
