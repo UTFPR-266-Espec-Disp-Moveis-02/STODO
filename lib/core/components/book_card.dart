@@ -1,6 +1,6 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../themes/colors.dart';
 
 class BookCard extends StatelessWidget {
   final String? imagePath;
@@ -28,7 +28,7 @@ class BookCard extends StatelessWidget {
               // Capa do Livro / Imagem
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppSpacing.s16),
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -57,11 +57,11 @@ class BookCard extends StatelessWidget {
 
                       // Barra de Progresso
                       Positioned(
-                        bottom: 12,
-                        left: 12,
-                        right: 12,
+                        bottom: AppSpacing.s12,
+                        left: AppSpacing.s12,
+                        right: AppSpacing.s12,
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(AppSpacing.s4),
                           child: LinearProgressIndicator(
                             value: progress,
                             minHeight: 6,
@@ -78,11 +78,11 @@ class BookCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.s8),
 
               // Título
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(AppSpacing.s8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -95,7 +95,7 @@ class BookCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.s4),
 
                     // Progresso em Texto
                     Text(
@@ -115,7 +115,7 @@ class BookCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: onTap,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppSpacing.s16),
               ),
             ),
           ),

@@ -1,5 +1,5 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
-import '../themes/colors.dart';
 
 enum TopicIcon {
   math(Icons.functions),
@@ -49,7 +49,7 @@ class IconSelector extends StatelessWidget {
             context,
           ).textTheme.labelLarge?.copyWith(color: AppColors.gray200),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
         Wrap(
           spacing: 12,
           runSpacing: 12,
@@ -66,7 +66,7 @@ class IconSelector extends StatelessWidget {
                   color: isSelected
                       ? AppColors.primary
                       : AppColors.primaryDarkAccent,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppSpacing.s16),
                   border: Border.all(
                     color: isSelected ? AppColors.primary : Colors.transparent,
                     width: 2,

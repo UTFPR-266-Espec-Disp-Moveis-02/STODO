@@ -1,5 +1,5 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
-import '../themes/colors.dart';
 
 class ColorSelector extends StatelessWidget {
   final String label;
@@ -28,7 +28,7 @@ class ColorSelector extends StatelessWidget {
             context,
           ).textTheme.labelLarge?.copyWith(color: AppColors.gray200),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
         Wrap(
           spacing: 12,
           runSpacing: 12,

@@ -1,5 +1,5 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
-import '../themes/colors.dart';
 
 class TopicCard extends StatelessWidget {
   final IconData icon;
@@ -23,16 +23,16 @@ class TopicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AppColors.primaryMedium,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(AppSpacing.s20),
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppSpacing.s20),
         side: const BorderSide(color: AppColors.primaryDarkAccent, width: 1.5),
       ),
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.s16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize:
@@ -43,7 +43,7 @@ class TopicCard extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSpacing.s12),
                 ),
                 child: Icon(icon, color: color, size: 24),
               ),
@@ -57,19 +57,19 @@ class TopicCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.s4),
               Text(
                 '$resourcesCount resources',
                 style: Theme.of(
                   context,
                 ).textTheme.bodySmall?.copyWith(color: AppColors.gray300),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.s16),
               Row(
                 children: [
                   Expanded(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(AppSpacing.s4),
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 6,
@@ -78,7 +78,7 @@ class TopicCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.s8),
                   Text(
                     '${(progress * 100).toInt()}%',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(

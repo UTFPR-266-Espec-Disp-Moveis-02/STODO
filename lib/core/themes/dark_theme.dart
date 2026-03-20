@@ -12,7 +12,9 @@ class AppDarkTheme {
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.primaryMedium,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.s16),
+          ),
         ),
       ),
 
@@ -71,33 +73,33 @@ class AppDarkTheme {
         filled: true,
         fillColor: AppColors.primaryMedium,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
+          horizontal: AppSpacing.s16,
+          vertical: AppSpacing.s12,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
           borderSide: const BorderSide(
             color: AppColors.primaryDarkAccent,
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
           borderSide: const BorderSide(
             color: AppColors.primaryDarkAccent,
             width: 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
           borderSide: const BorderSide(color: AppColors.topicColor2, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
           borderSide: const BorderSide(color: AppColors.topicColor2, width: 2),
         ),
         hintStyle: GoogleFonts.lexend(
@@ -129,9 +131,12 @@ class AppDarkTheme {
           foregroundColor: AppColors.dark,
           elevation: 4,
           shadowColor: AppColors.primary.withValues(alpha: .5),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+            vertical: AppSpacing.s12,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.s12),
           ),
           textStyle: GoogleFonts.lexend(
             fontSize: 14,
@@ -144,7 +149,10 @@ class AppDarkTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s16,
+            vertical: AppSpacing.s8,
+          ),
           textStyle: GoogleFonts.lexend(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -157,9 +165,12 @@ class AppDarkTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.light,
           side: const BorderSide(color: AppColors.light, width: 1.5),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+            vertical: AppSpacing.s12,
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.s12),
           ),
           textStyle: GoogleFonts.lexend(
             fontSize: 14,
@@ -185,7 +196,9 @@ class AppDarkTheme {
       cardTheme: CardThemeData(
         color: AppColors.primaryMedium,
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.s12),
+        ),
       ),
 
       // Icon theme
@@ -210,7 +223,9 @@ class AppDarkTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.dark,
         elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.s16),
+        ),
       ),
 
       // Checkbox theme
@@ -221,7 +236,9 @@ class AppDarkTheme {
           }
           return AppColors.primaryDarkAccent;
         }),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.s4),
+        ),
       ),
 
       // Radio theme

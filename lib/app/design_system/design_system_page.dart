@@ -1,3 +1,4 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/components/animated_grid_view.dart';
@@ -11,7 +12,6 @@ import '../../core/components/icon_selector.dart';
 import '../../core/components/primary_button.dart';
 
 import '../../core/components/topic_card.dart';
-import '../../core/themes/colors.dart';
 
 class DesignSystemPage extends StatefulWidget {
   const DesignSystemPage({super.key});
@@ -45,14 +45,14 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               initiallyExpanded: true,
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 const CustomTextField(
                   label: 'Text Field',
                   hint: 'Digite alguma coisa...',
                   prefixIcon: Icon(Icons.person),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 const CustomTextField(
                   label: 'Password',
                   hint: 'Digite sua senha',
@@ -60,7 +60,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   prefixIcon: Icon(Icons.lock),
                   suffixIcon: Icon(Icons.visibility),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 CustomDropdown<String>(
                   label: 'Dropdown de Opções',
                   value: _dropdownValue,
@@ -83,7 +83,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 '🖱️ Seletores',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
@@ -97,7 +97,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.s32),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: IconSelector(
@@ -118,7 +118,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 '🕹️ Botões',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 Row(
                   children: [
@@ -130,7 +130,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 Row(
                   children: [
                     Expanded(
@@ -141,7 +141,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.s32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -155,7 +155,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 Row(
                   children: [
                     Expanded(
@@ -167,7 +167,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 Row(
                   children: [
                     Expanded(
@@ -188,7 +188,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               initiallyExpanded: true,
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 AnimatedGridView(
                   crossAxisCount: 2,
@@ -239,7 +239,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               initiallyExpanded: true,
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 SizedBox(
                   height:
@@ -248,7 +248,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.s16),
                     itemBuilder: (context, index) {
                       return BookCard(
                         imagePath:
@@ -275,7 +275,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               initiallyExpanded: true,
-              childrenPadding: const EdgeInsets.all(16),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 BookListCard(
                   title: 'O Senhor dos Anéis',
@@ -285,7 +285,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   onTap: () {},
                   onRemove: () {},
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 BookListCard(
                   title: 'Duna',
                   author: 'Frank Herbert',
@@ -294,7 +294,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   onTap: () {},
                   onRemove: () {},
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 BookListCard(
                   title: 'Harry Potter',
                   author: 'J.K. Rowling',
@@ -303,7 +303,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   onTap: () {},
                   onRemove: () {},
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.s16),
                 BookListCard(
                   title: '1984',
                   author: 'George Orwell',
@@ -313,7 +313,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: AppSpacing.s40),
           ],
         ),
       ),

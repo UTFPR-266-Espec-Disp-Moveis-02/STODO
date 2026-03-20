@@ -1,6 +1,6 @@
+import 'package:stodo/core/themes/theme_exports.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../themes/colors.dart';
 
 enum BookStatus {
   reading('Lendo'),
@@ -55,7 +55,7 @@ class BookListCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.primaryMedium,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.s16),
         border: Border.all(color: AppColors.primaryDarkAccent, width: 1),
       ),
       clipBehavior: Clip.antiAlias,
@@ -76,7 +76,7 @@ class BookListCard extends StatelessWidget {
             child: InkWell(
               onTap: onTap,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(AppSpacing.s12),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -86,17 +86,17 @@ class BookListCard extends StatelessWidget {
                       height: 76,
                       decoration: BoxDecoration(
                         color: AppColors.primaryMedium,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppSpacing.s8),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: _buildImage(),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.s16),
 
                     // Detalhes do Livro
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(AppSpacing.s8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +111,7 @@ class BookListCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: AppSpacing.s2),
                             Text(
                               author,
                               style: Theme.of(context).textTheme.bodyMedium
@@ -119,7 +119,7 @@ class BookListCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: AppSpacing.s8),
                             _buildStatusRow(context),
                           ],
                         ),
@@ -147,7 +147,7 @@ class BookListCard extends StatelessWidget {
                                 color: AppColors.topicColor2,
                                 size: 20,
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.s8),
                               Text(
                                 'Remover',
                                 style: Theme.of(context).textTheme.bodyMedium
@@ -193,9 +193,9 @@ class BookListCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.s4),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppSpacing.s4),
             child: LinearProgressIndicator(
               value: prog,
               minHeight: 6,
@@ -232,10 +232,13 @@ class BookListCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s8,
+            vertical: AppSpacing.s4,
+          ),
           decoration: BoxDecoration(
             color: badgeBgColor,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.s12),
           ),
           child: Text(
             status.label.toUpperCase(),
@@ -247,7 +250,7 @@ class BookListCard extends StatelessWidget {
           ),
         ),
         if (extraInfo != null && extraInfo!.isNotEmpty) ...[
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.s8),
           Expanded(
             child: Text(
               extraInfo!,
