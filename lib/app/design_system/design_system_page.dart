@@ -15,6 +15,7 @@ import '../../core/components/progress_updater.dart';
 import '../../core/components/current_reading_card.dart';
 import '../../core/components/skeletons/skeleton.dart';
 import '../../core/components/skeletons/topic_card_skeleton.dart';
+import '../../core/components/app_logo.dart';
 
 import '../../core/components/topic_card.dart';
 
@@ -404,6 +405,42 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   onTap: () {},
                   onRemove: () {},
                 ),
+              ],
+            ),
+            const Divider(height: 1),
+            ExpansionTile(
+              title: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.image),
+                  SizedBox(width: AppSpacing.s8),
+                  Text(
+                    'Logos / Assets',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              childrenPadding: const EdgeInsets.all(AppSpacing.s16),
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Logo Quadrada',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                const Center(child: AppLogo(width: 80, height: 80)),
+                const SizedBox(height: AppSpacing.s32),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Logo Horizontal',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                const Center(child: AppLogoHorizontal(height: 60)),
               ],
             ),
             const Divider(height: 1),
