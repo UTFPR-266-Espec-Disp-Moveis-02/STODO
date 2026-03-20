@@ -144,6 +144,17 @@ Este projeto utiliza **Git Hooks** para garantir a qualidade do código e o vers
   - `chore`, `docs`, `style`, `refactor`, `perf`, `test`: Outras alterações (gera **Patch** version bump).
   - Adicione `!` após o tipo para **BREAKING CHANGES** (gera **Major** version bump).
 
+#### Fluxo de Release Automático:
+1. **Merge para `main`:** Quando um Pull Request é aceito e o código chega na branch `main`:
+   - O GitHub detecta se o commit é `feat` (Minor), `fix` (Patch) ou se tem um `!` (Major).
+   - O `pubspec.yaml` é atualizado automaticamente.
+   - Uma nova tag (ex: `v0.1.0`) é criada e enviada.
+2. **Geração de Release:** A criação da tag dispara a pipeline de **Release**:
+   - O Changelog é gerado automaticamente agrupando por funcionalidades, correções e breaking changes.
+   - O APK é buildado e anexado à release oficial no GitHub.
+
+> **Nota:** Para que a tag disparada pelo GitHub Actions inicie a pipeline de Release, recomenda-se configurar um Personal Access Token (PAT) nos segredos do repositório como `GITHUB_TOKEN_PAT`.
+
 ---
 
 ## 📅 Planejamento de Sprints (Roadmap MVP)
