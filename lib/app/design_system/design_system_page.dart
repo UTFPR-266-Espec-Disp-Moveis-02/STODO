@@ -57,7 +57,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   ),
                 ],
               ),
-              initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 const CustomTextField(
@@ -252,7 +251,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   ),
                 ],
               ),
-              initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 AnimatedGridView(
@@ -310,7 +308,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   ),
                 ],
               ),
-              initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 CurrentReadingCard(
@@ -360,7 +357,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   ),
                 ],
               ),
-              initiallyExpanded: true,
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
                 ProgressUpdater(
@@ -441,6 +437,16 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                 ),
                 const SizedBox(height: AppSpacing.s16),
                 const Center(child: AppLogoHorizontal(height: 60)),
+                const SizedBox(height: AppSpacing.s32),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Empty State',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                const Center(child: AppEmptyStateImage(height: 150)),
               ],
             ),
             const Divider(height: 1),
