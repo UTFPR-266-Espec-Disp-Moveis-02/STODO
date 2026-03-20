@@ -34,84 +34,36 @@ class AppDarkTheme {
       ),
 
       // Text themes with Lexend font
-      textTheme: GoogleFonts.lexendTextTheme(
-        TextTheme(
-          displayLarge: GoogleFonts.lexend(
-            fontSize: 57,
-            fontWeight: FontWeight.w700,
-            color: AppColors.light,
-          ),
-          displayMedium: GoogleFonts.lexend(
-            fontSize: 45,
-            fontWeight: FontWeight.w700,
-            color: AppColors.light,
-          ),
-          displaySmall: GoogleFonts.lexend(
-            fontSize: 36,
-            fontWeight: FontWeight.w700,
-            color: AppColors.light,
-          ),
-          headlineLarge: GoogleFonts.lexend(
-            fontSize: 32,
-            fontWeight: FontWeight.w700,
-            color: AppColors.light,
-          ),
-          headlineMedium: GoogleFonts.lexend(
-            fontSize: 28,
-            fontWeight: FontWeight.w600,
-            color: AppColors.light,
-          ),
-          headlineSmall: GoogleFonts.lexend(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: AppColors.light,
-          ),
-          titleLarge: GoogleFonts.lexend(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-            color: AppColors.light,
-          ),
-          titleMedium: GoogleFonts.lexend(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppColors.light,
-          ),
-          titleSmall: GoogleFonts.lexend(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.light,
-          ),
-          bodyLarge: GoogleFonts.lexend(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            color: AppColors.light,
-          ),
-          bodyMedium: GoogleFonts.lexend(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: AppColors.gray200,
-          ),
-          bodySmall: GoogleFonts.lexend(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: AppColors.gray300,
-          ),
-          labelLarge: GoogleFonts.lexend(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.light,
-          ),
-          labelMedium: GoogleFonts.lexend(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: AppColors.gray200,
-          ),
-          labelSmall: GoogleFonts.lexend(
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-            color: AppColors.gray300,
-          ),
+      textTheme: TextTheme(
+        displayLarge: AppTypography.displayLarge.copyWith(
+          color: AppColors.light,
         ),
+        displayMedium: AppTypography.displayMedium.copyWith(
+          color: AppColors.light,
+        ),
+        displaySmall: AppTypography.displaySmall.copyWith(
+          color: AppColors.light,
+        ),
+        headlineLarge: AppTypography.headlineLarge.copyWith(
+          color: AppColors.light,
+        ),
+        headlineMedium: AppTypography.headlineMedium.copyWith(
+          color: AppColors.light,
+        ),
+        headlineSmall: AppTypography.headlineSmall.copyWith(
+          color: AppColors.light,
+        ),
+        titleLarge: AppTypography.titleLarge.copyWith(color: AppColors.light),
+        titleMedium: AppTypography.titleMedium.copyWith(color: AppColors.light),
+        titleSmall: AppTypography.titleSmall.copyWith(color: AppColors.light),
+        bodyLarge: AppTypography.bodyLarge.copyWith(color: AppColors.light),
+        bodyMedium: AppTypography.bodyMedium.copyWith(color: AppColors.gray200),
+        bodySmall: AppTypography.bodySmall.copyWith(color: AppColors.gray300),
+        labelLarge: AppTypography.labelLarge.copyWith(color: AppColors.light),
+        labelMedium: AppTypography.labelMedium.copyWith(
+          color: AppColors.gray200,
+        ),
+        labelSmall: AppTypography.labelSmall.copyWith(color: AppColors.gray300),
       ),
 
       // Input decoration theme
