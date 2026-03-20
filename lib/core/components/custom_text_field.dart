@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final TextAlign textAlign;
 
   const CustomTextField({
     super.key,
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
+    this.textAlign = TextAlign.start,
   });
 
   @override
@@ -41,6 +43,7 @@ class CustomTextField extends StatelessWidget {
           obscureText: obscureText,
           validator: validator,
           keyboardType: keyboardType,
+          textAlign: textAlign,
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(color: AppColors.light),

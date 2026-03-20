@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
+
+import 'custom_text_field.dart';
 
 class ProgressUpdater extends StatefulWidget {
   final int currentValue;
@@ -130,95 +131,67 @@ class _ProgressUpdaterState extends State<ProgressUpdater> {
           // Controls
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // Decrement Button
-              InkWell(
-                onTap: _localValue > 0 ? _decrement : null,
-                borderRadius: BorderRadius.circular(AppSpacing.s32),
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.primaryDarkAccent,
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+                child: FloatingActionButton(
+                  heroTag: 'decrement_btn',
+                  onPressed: _localValue > 0 ? _decrement : null,
+                  backgroundColor: AppColors.primaryMedium,
+                  foregroundColor: _localValue > 0
+                      ? AppColors.primary
+                      : AppColors.gray400,
+                  elevation: 0,
+                  shape: CircleBorder(
+                    side: BorderSide(
+                      color: _localValue > 0
+                          ? AppColors.primary
+                          : AppColors.primaryDarkAccent,
                       width: 2,
                     ),
                   ),
-                  child: Icon(
-                    Icons.remove,
-                    color: _localValue > 0
-                        ? AppColors.primary
-                        : AppColors.gray400,
-                  ),
+                  child: const Icon(Icons.remove),
                 ),
               ),
               const SizedBox(width: AppSpacing.s16),
               // Input Field
-              Container(
-                width: 120,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryDark,
-                  borderRadius: BorderRadius.circular(AppSpacing.s16),
-                ),
-                child: TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.light,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  onSubmitted: _onInputSubmitted,
-                  onTapOutside: (_) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    _onInputSubmitted(_controller.text);
+              SizedBox(
+                width: 120, // Mantendo a largura menor
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    if (!hasFocus) {
+                      _onInputSubmitted(_controller.text);
+                    }
                   },
+                  child: CustomTextField(
+                    label: 'PÁGINA ATUAL',
+                    controller: _controller,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.s16),
               // Increment Button
-              InkWell(
-                onTap: _localValue < widget.maxValue ? _increment : null,
-                borderRadius: BorderRadius.circular(AppSpacing.s32),
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _localValue < widget.maxValue
-                        ? AppColors.primary
-                        : AppColors.primaryDarkAccent,
-                  ),
-                  child: Icon(
-                    Icons.add,
-                    color: _localValue < widget.maxValue
-                        ? AppColors.light
-                        : AppColors.gray400,
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+                child: FloatingActionButton(
+                  heroTag: 'increment_btn',
+                  onPressed: _localValue < widget.maxValue ? _increment : null,
+                  backgroundColor: _localValue < widget.maxValue
+                      ? AppColors.primary
+                      : AppColors.primaryDarkAccent,
+                  foregroundColor: AppColors.light,
+                  elevation: 2,
+                  shape: const CircleBorder(),
+                  child: const Icon(Icons.add),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.s24),
-          Text(
-            'PÁGINA ATUAL',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: AppColors.gray300,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2.0,
-            ),
-          ),
+          const SizedBox(height: AppSpacing.s16),
         ],
       ),
     );
