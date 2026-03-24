@@ -6,6 +6,7 @@ class BookModel {
   final int totalPages;
   final int topicId;
   final String updatedAt;
+  final String? imagePath;
 
   BookModel({
     required this.id,
@@ -15,6 +16,7 @@ class BookModel {
     required this.totalPages,
     required this.topicId,
     required this.updatedAt,
+    this.imagePath,
   });
 
   factory BookModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class BookModel {
       totalPages: map['total_pages'],
       topicId: map['topic_id'],
       updatedAt: map['updated_at'],
+      imagePath: map['image_path'],
     );
   }
 }
