@@ -3,14 +3,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
+import 'package:stodo/core/models/book_model.dart';
 
 import '../../../core/components/assets/app_logo_horizontal.dart';
+import '../../../core/components/cards/book_card.dart';
+import '../../../core/components/cards/topic_card.dart';
+import '../../../core/components/form/icon_selector.dart';
+import '../../../core/components/layout/animated_grid_view.dart';
 import '../../../core/components/states/full_empty_state.dart';
+import '../../../core/components/states/home_empty_state_card.dart';
+import '../../../core/models/topic_progress_model.dart';
 import '../../../core/themes/colors.dart';
+import '../../../core/themes/spacing.dart';
 
-class HomeDashboardPage extends StatelessWidget {
+class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({super.key});
 
+  @override
+  State<HomeDashboardPage> createState() => _HomeDashboardPageState();
+}
+
+class _HomeDashboardPageState extends State<HomeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -23,7 +36,7 @@ class HomeDashboardPage extends StatelessWidget {
           title: AppLogoHorizontal(height: 42, width: 145),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.only(right: 17),
               child: Material(
                 color: Colors.transparent,
                 shape: const CircleBorder(),
@@ -67,28 +80,137 @@ class HomeDashboardPage extends StatelessWidget {
 
             if (state is DashboardSuccessState) {
               if (state.recentBooks.isEmpty && state.topicProgress.isEmpty) {
-                return Container(
-                  color: AppColors.primaryDark,
-                  child: FullEmptyState(
-                    title: 'Sua jornada de estudos\ncomeça aqui',
-                    subtitle:
-                        'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
-                    primaryButtonText: 'Cadastrar Livro',
-                    onPrimaryPressed: () {},
-                    outlineButtonText: 'Criar Tópico',
-                    onOutlinePressed: () {},
+                return fullEmptyState();
+              } else {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.s16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        recentBookSection(state.recentBooks),
+                        const SizedBox(height: AppSpacing.s16),
+                        topicProgressSection(state.topicProgress),
+                      ],
+                    ),
                   ),
                 );
               }
-
-              return const Center(
-                child: Text('Dashboard Carregado com Sucesso!'),
-              );
             }
 
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+
+  Widget fullEmptyState() {
+    return Container(
+      color: AppColors.primaryDark,
+      child: FullEmptyState(
+        title: 'Sua jornada de estudos\ncomeça aqui',
+        subtitle:
+            'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
+        primaryButtonText: 'Cadastrar Livro',
+        onPrimaryPressed: () {},
+        outlineButtonText: 'Criar Tópico',
+        onOutlinePressed: () {},
+      ),
+    );
+  }
+
+  Widget topicProgressSection(List<TopicProgressModel> topicProgress) {
+    return Column(
+      children: [
+        sectionTitle('Tópicos', () {}, topicProgress.isEmpty),
+
+        topicProgress.isEmpty
+            ? HomeEmptyStateCard(
+                icon: Icons.menu_book,
+                title: 'Você ainda não criou tópicos',
+                subtitle:
+                    'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
+                buttonText: 'Criar Tópico',
+                onPressed: () {},
+              )
+            : Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.s12),
+                child: AnimatedGridView(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.0,
+                  children: topicProgress.map((topic) {
+                    return TopicCard(
+                      icon: TopicIcon.fromDbString(topic.iconId).iconData,
+                      color: Color(int.parse(topic.colorHex)),
+                      title: topic.name,
+                      resourcesCount: topic.totalPages,
+                      progress: topic.totalRead / topic.totalPages,
+                      onTap: () {},
+                    );
+                  }).toList(),
+                ),
+              ),
+      ],
+    );
+  }
+
+  Widget recentBookSection(List<BookModel> recentBooks) {
+    return Column(
+      children: [
+        sectionTitle('Lendo agora', () {}, recentBooks.isEmpty),
+        recentBooks.isEmpty
+            ? HomeEmptyStateCard(
+                icon: Icons.menu_book,
+                title: 'Nenhum livro sendo lido agora',
+                buttonText: 'Adicionar Livro',
+                onPressed: () {},
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    height: 280,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: recentBooks.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: AppSpacing.s16),
+                      itemBuilder: (context, index) {
+                        return BookCard(
+                          imagePath: recentBooks[index].imagePath,
+                          title: recentBooks[index].title,
+                          progress:
+                              recentBooks[index].currentPage /
+                              recentBooks[index].totalPages,
+                          onTap: () {},
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+      ],
+    );
+  }
+
+  Widget sectionTitle(String label, Function()? onPressed, bool emptyState) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.light,
+            ),
+          ),
+          if (!emptyState)
+            TextButton(onPressed: onPressed, child: const Text('Ver Todos')),
+        ],
       ),
     );
   }
