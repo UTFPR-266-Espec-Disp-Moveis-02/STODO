@@ -15,6 +15,7 @@ import '../../../core/components/states/home_empty_state_card.dart';
 import '../../../core/models/topic_progress_model.dart';
 import '../../../core/themes/colors.dart';
 import '../../../core/themes/spacing.dart';
+import '../widgets/dashboard_loading_view.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({super.key});
@@ -71,7 +72,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         body: BlocBuilder<DashboardCubit, DashboardState>(
           builder: (context, state) {
             if (state is DashboardLoadingState) {
-              return const Center(child: CircularProgressIndicator());
+              return DashboardLoadingView();
             }
 
             if (state is DashboardErrorState) {
