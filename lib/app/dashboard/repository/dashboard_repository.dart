@@ -7,7 +7,6 @@ import '../../../core/models/book_model.dart';
 class DashboardRepository {
   final Future<Database> _db = AppDatabase.instance;
 
-  /// 📚 Livros recentes
   Future<List<BookModel>> getRecentBooks() async {
     final db = await _db;
 
@@ -22,7 +21,6 @@ class DashboardRepository {
     return result.map((e) => BookModel.fromMap(e)).toList();
   }
 
-  /// 🧠 Agregação de tópicos (PERFORMÁTICA)
   Future<List<TopicProgressModel>> getTopicsProgress() async {
     final db = await _db;
 
