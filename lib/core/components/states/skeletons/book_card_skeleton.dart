@@ -54,7 +54,7 @@ class BookCardSkeleton extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Skeleton(height: 16, width: 120, borderRadius: AppSpacing.s4),
-                const SizedBox(height: AppSpacing.s4),
+                SizedBox(height: AppSpacing.s4),
                 Skeleton(height: 12, width: 70, borderRadius: AppSpacing.s4),
               ],
             ),
