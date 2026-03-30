@@ -17,8 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Importante: Usar um PAT se quiser que a tag disparada aqui inicie o workflow de Release
-          # token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Bump version
         id: bump_version
