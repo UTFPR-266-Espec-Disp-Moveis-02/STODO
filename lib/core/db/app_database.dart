@@ -34,6 +34,7 @@ class AppDatabase {
             total_pages INTEGER,
             topic_id INTEGER,
             updated_at TEXT,
+            image_path TEXT,
             FOREIGN KEY (topic_id) REFERENCES topics(id)
           );
         ''');
