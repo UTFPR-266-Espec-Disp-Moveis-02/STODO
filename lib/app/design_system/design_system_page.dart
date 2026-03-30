@@ -17,6 +17,7 @@ import '../../core/components/form/progress_updater.dart';
 import '../../core/components/layout/animated_grid_view.dart';
 import '../../core/components/states/full_empty_state.dart';
 import '../../core/components/states/home_empty_state_card.dart';
+import '../../core/components/states/skeletons/book_card_skeleton.dart';
 import '../../core/components/states/skeletons/skeleton.dart';
 import '../../core/components/states/skeletons/topic_card_skeleton.dart';
 import '../../core/themes/theme_exports.dart';
@@ -560,6 +561,18 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                   child: Text(
                     'Topic Card Skeleton',
                     style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 280,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 2,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: AppSpacing.s16),
+                    itemBuilder: (context, index) {
+                      return BookCardSkeleton();
+                    },
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s16),

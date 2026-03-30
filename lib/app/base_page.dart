@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stodo/app/dashboard/pages/home_dashboard_page.dart';
 
 import 'design_system/design_system_page.dart';
 
@@ -14,12 +15,7 @@ class _BasePageState extends State<BasePage> {
 
   // Lista de páginas mapeadas para os itens do BottomNavigationBar
   final List<Widget> _pages = [
-    const Center(
-      child: Text(
-        'Dashboard',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    ),
+    HomeDashboardPage(),
     const Center(
       child: Text(
         'Topics',
@@ -53,10 +49,7 @@ class _BasePageState extends State<BasePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Topics'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Library',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Library'),
           BottomNavigationBarItem(
             icon: Icon(Icons.design_services),
             label: 'Des. System',

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:stodo/core/db/app_database.dart';
+
 import 'app/base_page.dart';
 import 'core/themes/theme_exports.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await AppDatabase.instance;
   runApp(const MyApp());
 }
 
