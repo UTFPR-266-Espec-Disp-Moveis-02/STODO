@@ -13,10 +13,6 @@ class ColorSelector extends StatelessWidget {
     required this.onColorSelected,
   });
 
-  String _colorToHex(Color color) {
-    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,10 +26,10 @@ class ColorSelector extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.s12),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 10,
+          runSpacing: 10,
           children: AppColors.topicColors.map((color) {
-            final colorHex = _colorToHex(color);
+            final colorHex = AppColors.colorToHex(color);
             final isSelected = colorHex == selectedColorHex;
 
             return GestureDetector(

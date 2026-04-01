@@ -37,4 +37,9 @@ class AppColors {
     topicColor7,
     topicColor8,
   ];
+
+  // Helper method to convert Color to Hex string
+  static String colorToHex(Color color) {
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}';
+  }
 }

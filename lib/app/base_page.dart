@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/app/dashboard/pages/home_dashboard_page.dart';
+import 'package:stodo/app/topics/pages/topics_page.dart';
 
 import 'design_system/design_system_page.dart';
 
@@ -13,15 +14,18 @@ class BasePage extends StatefulWidget {
 class _BasePageState extends State<BasePage> {
   int _currentIndex = 0;
 
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   // Lista de páginas mapeadas para os itens do BottomNavigationBar
-  final List<Widget> _pages = [
-    HomeDashboardPage(),
-    const Center(
-      child: Text(
-        'Topics',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
+  List<Widget> get _pages => [
+    HomeDashboardPage(
+      onNavigateToTopics: () => _onTabTapped(1),
     ),
+    TopicsPage(),
     const Center(
       child: Text(
         'Library',
@@ -30,12 +34,6 @@ class _BasePageState extends State<BasePage> {
     ),
     const DesignSystemPage(),
   ];
-
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

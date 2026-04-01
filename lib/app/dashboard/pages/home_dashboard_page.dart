@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
+import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/models/book_model.dart';
 
 import '../../../core/components/assets/app_logo_horizontal.dart';
@@ -18,7 +20,8 @@ import '../../../core/themes/spacing.dart';
 import '../widgets/dashboard_loading_view.dart';
 
 class HomeDashboardPage extends StatefulWidget {
-  const HomeDashboardPage({super.key});
+  final VoidCallback onNavigateToTopics;
+  const HomeDashboardPage({super.key, required this.onNavigateToTopics});
 
   @override
   State<HomeDashboardPage> createState() => _HomeDashboardPageState();
@@ -29,7 +32,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          DashboardCubit(DashboardRepository())..loadDashboard(),
+        DashboardCubit(
+          DashboardRepository(),
+          TopicsRepository()
+        )..loadDashboard(),
       child: Scaffold(
         backgroundColor: AppColors.primaryDark,
         appBar: AppBar(
@@ -81,7 +87,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
 
             if (state is DashboardSuccessState) {
               if (state.recentBooks.isEmpty && state.topicProgress.isEmpty) {
-                return fullEmptyState();
+                return fullEmptyState(context);
               } else {
                 return SingleChildScrollView(
                   child: Padding(
@@ -106,7 +112,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     );
   }
 
-  Widget fullEmptyState() {
+  Widget fullEmptyState(BuildContext context) {
     return Container(
       color: AppColors.primaryDark,
       child: FullEmptyState(
@@ -116,7 +122,21 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         primaryButtonText: 'Cadastrar Livro',
         onPrimaryPressed: () {},
         outlineButtonText: 'Criar Tópico',
-        onOutlinePressed: () {},
+        onOutlinePressed: () {
+          final dashboardCubit = context.read<DashboardCubit>();
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            showDragHandle: true,
+            builder: (BuildContext context) {
+              return CreateTopicBottomSheet(
+                onTopicCreate: (topic) {
+                  dashboardCubit.addTopic(topic);
+                },
+              );
+            }
+          );
+        },
       ),
     );
   }
@@ -124,7 +144,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget topicProgressSection(List<TopicProgressModel> topicProgress) {
     return Column(
       children: [
-        sectionTitle('Tópicos', () {}, topicProgress.isEmpty),
+        sectionTitle('Tópicos', widget.onNavigateToTopics, topicProgress.isEmpty),
 
         topicProgress.isEmpty
             ? HomeEmptyStateCard(
@@ -143,12 +163,12 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                   mainAxisSpacing: 16,
                   childAspectRatio: 1.0,
                   children: topicProgress.map((topic) {
-                    return TopicCard(
+                    return TopicCard.fromHex(
                       icon: TopicIcon.fromDbString(topic.iconId).iconData,
-                      color: Color(int.parse(topic.colorHex)),
+                      colorStr: topic.colorHex,
                       title: topic.name,
+                      totalRead: topic.totalRead,
                       resourcesCount: topic.totalPages,
-                      progress: topic.totalRead / topic.totalPages,
                       onTap: () {},
                     );
                   }).toList(),

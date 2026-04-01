@@ -9,10 +9,13 @@ import 'package:stodo/core/themes/theme_exports.dart';
 ///
 /// Ideal para formulários, configurações e áreas de input ao longo do app.
 class CustomTextField extends StatelessWidget {
-  final String label;
+  final String? label;
   final String? hint;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final bool autoFocus;
   final bool obscureText;
+  final int? maxLength;
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -23,10 +26,13 @@ class CustomTextField extends StatelessWidget {
 
   const CustomTextField({
     super.key,
-    required this.label,
+    this.label,
     this.hint,
     this.controller,
+    this.focusNode,
+    this.autoFocus = false,
     this.obscureText = false,
+    this.maxLength,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
@@ -41,17 +47,21 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: AppColors.light,
-            fontWeight: FontWeight.w600,
+        if(label != null) ...[
+          Text(
+            label!,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: AppColors.light,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.s8),
+          const SizedBox(height: AppSpacing.s8),
+        ],
         TextFormField(
           controller: controller,
+          autofocus: autoFocus,
           obscureText: obscureText,
+          maxLength: maxLength,
           validator: validator,
           keyboardType: keyboardType,
           textAlign: textAlign,
