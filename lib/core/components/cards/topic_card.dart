@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 /// Utilizado predominantemente nas telas de Listagem de Tópicos e Dashboard.
 class TopicCard extends StatelessWidget {
   final IconData icon;
+  final String colorStr;
   final Color color;
   final String title;
+  final int totalRead;
   final int resourcesCount;
   final double progress; // 0.0 to 1.0
   final VoidCallback? onTap;
@@ -20,10 +22,33 @@ class TopicCard extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.title,
+    required this.totalRead,
     required this.resourcesCount,
-    required this.progress,
     this.onTap,
-  });
+  }) : colorStr = '',
+       progress = resourcesCount > 0 ? totalRead / resourcesCount : 0.0;
+
+  factory TopicCard.fromHex({
+    Key? key,
+    required IconData icon,
+    required String colorStr,
+    required String title,
+    required int totalRead,
+    required int resourcesCount,
+    VoidCallback? onTap,
+  }) {
+    return TopicCard(
+      key: key,
+      icon: icon,
+      color: Color(
+        int.parse(colorStr.replaceFirst('#', '0xFF')),
+      ),
+      title: title,
+      totalRead: totalRead,
+      resourcesCount: resourcesCount,
+      onTap: onTap,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

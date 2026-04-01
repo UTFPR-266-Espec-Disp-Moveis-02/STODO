@@ -60,8 +60,8 @@ class IconSelector extends StatelessWidget {
               onTap: () => onIconSelected(topicIcon),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: 64,
-                height: 64,
+                width: 60,
+                height: 60,
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.primary

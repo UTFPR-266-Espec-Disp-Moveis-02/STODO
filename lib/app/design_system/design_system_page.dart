@@ -269,32 +269,32 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       icon: TopicIcon.math.iconData,
                       color: AppColors.topicColor1, // Azul
                       title: 'Cálculo I',
+                      totalRead: 5,
                       resourcesCount: 12,
-                      progress: 0.45,
                       onTap: () {}, // Teste de tap no Design System
                     ),
                     TopicCard(
                       icon: Icons.smartphone,
                       color: AppColors.topicColor7, // Roxo
                       title: 'Mobile Dev',
+                      totalRead: 5,
                       resourcesCount: 8,
-                      progress: 0.65,
                       onTap: () {},
                     ),
                     TopicCard(
                       icon: TopicIcon.brain.iconData,
                       color: AppColors.topicColor3, // Verde
                       title: 'IA Aplicada',
+                      totalRead: 4,
                       resourcesCount: 24,
-                      progress: 0.15,
                       onTap: () {},
                     ),
                     TopicCard(
                       icon: TopicIcon.book.iconData,
                       color: AppColors.topicColor4, // Laranja
                       title: 'Literatura',
+                      totalRead: 26,
                       resourcesCount: 30,
-                      progress: 0.85,
                       onTap: () {},
                     ),
                   ],
