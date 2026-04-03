@@ -68,6 +68,7 @@ class _CreateTopicBottomSheetState extends State<CreateTopicBottomSheet> {
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        spacing: AppSpacing.s24,
         children: [
           if (error != null) ...[
             Text(error!, style: const TextStyle(color: Colors.red)),
@@ -84,20 +85,20 @@ class _CreateTopicBottomSheetState extends State<CreateTopicBottomSheet> {
               AppValidators.maxLength(30),
             ]),
           ),
-          const SizedBox(height: AppSpacing.s24),
+
           IconSelector(
             label: 'Escolha um Ícone',
             selectedIcon: selectedIcon,
             onIconSelected: (icon) => setState(() => selectedIcon = icon),
           ),
-          const SizedBox(height: AppSpacing.s32),
+
           ColorSelector(
             label: 'Cor do Tópico',
             selectedColorHex: selectedColorHex,
             onColorSelected: (color) =>
                 setState(() => selectedColorHex = color),
           ),
-          const SizedBox(height: AppSpacing.s24),
+          const SizedBox(height: AppSpacing.s12),
           Row(
             children: [
               Expanded(

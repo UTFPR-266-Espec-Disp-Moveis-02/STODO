@@ -29,11 +29,9 @@ class AppBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-        left: AppSpacing.s20,
-        right: AppSpacing.s20,
-        top: AppSpacing.s12,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.s24,
+      padding: EdgeInsets.symmetric(
+        vertical: AppSpacing.s12,
+        horizontal: AppSpacing.s24,
       ),
       child: SafeArea(
         child: Column(

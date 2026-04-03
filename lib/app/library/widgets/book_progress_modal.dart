@@ -79,8 +79,9 @@ class _BookProgressContent extends StatelessWidget {
                   );
                 }).toList(),
                 onChanged: (s) {
-                  if (s != null)
+                  if (s != null) {
                     context.read<BookProgressCubit>().onStatusChanged(s);
+                  }
                 },
               );
             },
