@@ -145,8 +145,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     setState(() {
                       _selectedIcon = icon;
                     });
-                    },
-                  ),
+                  },
                 ),
               ],
             ),

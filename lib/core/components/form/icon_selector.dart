@@ -57,16 +57,18 @@ class _IconSelectorState extends State<IconSelector> {
       validator: widget.validator,
       autovalidateMode: widget.autovalidateMode,
       builder: (state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        return SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Text(
               widget.label,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: state.hasError ? AppColors.topicColor2 : AppColors.gray200,
               ),
             ),
-            const SizedBox(height: AppSpacing.s8),
+            const SizedBox(height: AppSpacing.s12),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -111,6 +113,7 @@ class _IconSelectorState extends State<IconSelector> {
               ),
             ],
           ],
+          ),
         );
       },
     );
