@@ -23,6 +23,27 @@ class AppValidators {
     };
   }
 
+  /// Valida que o texto não ultrapassa [max] caracteres.
+  static String? Function(String?) maxLength(int max, {String? message}) {
+    return (value) {
+      if (value != null && value.length > max) {
+        return message ?? 'Máximo de $max caracteres';
+      }
+      return null;
+    };
+  }
+
+  /// Encadeia múltiplos validators — retorna o primeiro erro encontrado.
+  static String? Function(T?) compose<T>(List<String? Function(T?)> validators) {
+    return (value) {
+      for (final v in validators) {
+        final error = v(value);
+        if (error != null) return error;
+      }
+      return null;
+    };
+  }
+
   /// Valida que o valor é um número inteiro entre 0 e [max].
   static String? Function(String?) pageNumber({required int max}) {
     return (value) {

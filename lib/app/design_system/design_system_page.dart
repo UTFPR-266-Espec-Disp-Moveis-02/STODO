@@ -18,7 +18,6 @@ import '../../core/components/form/custom_dropdown.dart';
 import '../../core/components/form/custom_text_field.dart';
 import '../../core/components/form/icon_selector.dart';
 import '../../core/components/form/image_upload_field.dart';
-import '../../core/components/form/progress_updater.dart';
 import '../../core/components/layout/animated_grid_view.dart';
 import '../../core/components/states/full_empty_state.dart';
 import '../../core/components/states/home_empty_state_card.dart';
@@ -372,14 +371,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
-                ProgressUpdater(
-                  currentValue: 352,
-                  maxValue: 476,
-                  onChanged: (val) {
-                    debugPrint('Novo progresso: $val');
-                  },
-                ),
-                const SizedBox(height: AppSpacing.s16),
                 ...[
                   BookModel(
                     id: 1,
