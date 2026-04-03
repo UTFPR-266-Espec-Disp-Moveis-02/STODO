@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
+import 'package:stodo/core/utils/input_formatters.dart';
+import 'package:stodo/core/utils/validators.dart';
 
 import 'custom_text_field.dart';
 
@@ -27,6 +29,7 @@ class ProgressUpdater extends StatefulWidget {
 class _ProgressUpdaterState extends State<ProgressUpdater> {
   late TextEditingController _controller;
   late int _localValue;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -70,19 +73,28 @@ class _ProgressUpdaterState extends State<ProgressUpdater> {
     }
   }
 
+  /// Atualiza o display em tempo real conforme o usuário digita.
+  void _onTyped(String value) {
+    final parsed = int.tryParse(value);
+    if (parsed != null) {
+      setState(() => _localValue = parsed);
+    }
+  }
+
+  /// Chamado ao perder o foco — clampeia e emite o valor final.
   void _onInputSubmitted(String value) {
-    final int? parsedValue = int.tryParse(value);
-    if (parsedValue != null) {
-      int clamped = parsedValue.clamp(0, widget.maxValue);
+    final parsed = int.tryParse(value);
+    if (parsed != null) {
+      final clamped = parsed.clamp(0, widget.maxValue);
       setState(() {
         _localValue = clamped;
         _controller.text = _localValue.toString();
       });
       widget.onChanged(_localValue);
     } else {
-      // Reverter se digitação for inválida
       _controller.text = _localValue.toString();
     }
+    _formKey.currentState?.validate();
   }
 
   @override
@@ -139,60 +151,59 @@ class _ProgressUpdaterState extends State<ProgressUpdater> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // Decrement Button
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-                child: FloatingActionButton(
-                  heroTag: 'decrement_btn',
-                  onPressed: _localValue > 0 ? _decrement : null,
-                  backgroundColor: AppColors.primaryMedium,
-                  foregroundColor: _localValue > 0
-                      ? AppColors.primary
-                      : AppColors.gray400,
-                  elevation: 0,
-                  shape: CircleBorder(
-                    side: BorderSide(
-                      color: _localValue > 0
-                          ? AppColors.primary
-                          : AppColors.primaryDarkAccent,
-                      width: 2,
-                    ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: _localValue > 0 ? _decrement : null,
+                backgroundColor: AppColors.primaryMedium,
+                foregroundColor: _localValue > 0
+                    ? AppColors.primary
+                    : AppColors.gray400,
+                elevation: 0,
+                shape: CircleBorder(
+                  side: BorderSide(
+                    color: _localValue > 0
+                        ? AppColors.primary
+                        : AppColors.primaryDarkAccent,
+                    width: 2,
                   ),
-                  child: const Icon(Icons.remove),
                 ),
+                child: const Icon(Icons.remove),
               ),
               const SizedBox(width: AppSpacing.s16),
               // Input Field
               SizedBox(
-                width: 120, // Mantendo a largura menor
-                child: Focus(
-                  onFocusChange: (hasFocus) {
-                    if (!hasFocus) {
-                      _onInputSubmitted(_controller.text);
-                    }
-                  },
-                  child: CustomTextField(
-                    label: 'PÁGINA ATUAL',
-                    controller: _controller,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
+                width: 120,
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Focus(
+                    onFocusChange: (hasFocus) {
+                      if (!hasFocus) _onInputSubmitted(_controller.text);
+                    },
+                    child: CustomTextField(
+                      label: 'PÁGINA ATUAL',
+                      controller: _controller,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      inputFormatters: [AppInputFormatters.digitsOnly],
+                      onChanged: _onTyped,
+                      validator: AppValidators.pageNumber(max: widget.maxValue),
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.s16),
               // Increment Button
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-                child: FloatingActionButton(
-                  heroTag: 'increment_btn',
-                  onPressed: _localValue < widget.maxValue ? _increment : null,
-                  backgroundColor: _localValue < widget.maxValue
-                      ? AppColors.primary
-                      : AppColors.primaryDarkAccent,
-                  foregroundColor: AppColors.light,
-                  elevation: 2,
-                  shape: const CircleBorder(),
-                  child: const Icon(Icons.add),
-                ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: _localValue < widget.maxValue ? _increment : null,
+                backgroundColor: _localValue < widget.maxValue
+                    ? AppColors.primary
+                    : AppColors.primaryDarkAccent,
+                foregroundColor: AppColors.light,
+                elevation: 2,
+                shape: const CircleBorder(),
+                child: const Icon(Icons.add),
               ),
             ],
           ),
