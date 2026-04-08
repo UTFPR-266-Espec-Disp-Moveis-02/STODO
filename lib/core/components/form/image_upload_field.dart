@@ -7,12 +7,16 @@ class ImageUploadField extends StatefulWidget {
   final String label;
   final String? initialImagePath;
   final ValueChanged<String?>? onImageSelected;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   const ImageUploadField({
     super.key,
     required this.label,
     this.initialImagePath,
     this.onImageSelected,
+    this.validator,
+    this.autovalidateMode,
   });
 
   @override
@@ -23,6 +27,7 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
   String? _currentImagePath;
   final ImagePickerService _pickerService = ImagePickerService();
   bool _isLoading = false;
+  final _fieldKey = GlobalKey<FormFieldState<String>>();
 
   @override
   void initState() {
@@ -40,36 +45,51 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
 
     if (imagePath != null) {
       setState(() => _currentImagePath = imagePath);
+      _fieldKey.currentState?.didChange(imagePath);
       widget.onImageSelected?.call(imagePath);
     }
   }
 
   void _removeImage() {
     setState(() => _currentImagePath = null);
+    _fieldKey.currentState?.didChange(null);
     widget.onImageSelected?.call(null);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.label.toUpperCase(),
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: AppColors.gray200,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.s8),
-        GestureDetector(
-          onTap: _pickImage,
-          child: _currentImagePath != null
-              ? _buildImagePreview()
-              : _buildUploadPlaceholder(),
-        ),
-      ],
+    return FormField<String>(
+      key: _fieldKey,
+      initialValue: _currentImagePath,
+      validator: widget.validator,
+      autovalidateMode: widget.autovalidateMode,
+      builder: (state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.label,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: state.hasError ? AppColors.topicColor2 : AppColors.gray200,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.s8),
+            GestureDetector(
+              onTap: _pickImage,
+              child: _currentImagePath != null
+                  ? _buildImagePreview()
+                  : _buildUploadPlaceholder(hasError: state.hasError),
+            ),
+            if (state.hasError) ...[
+              const SizedBox(height: AppSpacing.s8),
+              Text(
+                state.errorText!,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.topicColor2),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 
@@ -111,10 +131,12 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
     );
   }
 
-  Widget _buildUploadPlaceholder() {
+  Widget _buildUploadPlaceholder({bool hasError = false}) {
     return CustomPaint(
       painter: _DashedBorderPainter(
-        color: AppColors.gray400.withValues(alpha: 0.5),
+        color: hasError
+            ? AppColors.topicColor2.withValues(alpha: 0.6)
+            : AppColors.gray400.withValues(alpha: 0.5),
         strokeWidth: 2,
         radius: AppSpacing.s16,
         dashPattern: const [8, 4],
