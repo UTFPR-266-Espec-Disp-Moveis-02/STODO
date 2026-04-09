@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
 
 /// Um campo de texto customizado padronizado para o aplicativo STODO.
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final TextAlign textAlign;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
@@ -37,6 +39,7 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
+    this.inputFormatters,
     this.textAlign = TextAlign.start,
     this.onChanged,
     this.onFieldSubmitted,
@@ -67,6 +70,7 @@ class CustomTextField extends StatelessWidget {
           textAlign: textAlign,
           onChanged: onChanged,
           onFieldSubmitted: onFieldSubmitted,
+          inputFormatters: inputFormatters,
           onTapOutside: (event) {
             FocusManager.instance.primaryFocus?.unfocus();
             if (onFieldSubmitted != null && controller != null) {

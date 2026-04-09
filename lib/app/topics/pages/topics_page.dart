@@ -12,9 +12,7 @@ import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/components/states/skeletons/topic_card_skeleton.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
-import 'package:stodo/core/themes/colors.dart';
-
-import '../../../core/themes/spacing.dart';
+import '../../../core/themes/theme_exports.dart';
 
 class TopicsPage extends StatefulWidget {
   const TopicsPage({super.key});
@@ -144,47 +142,27 @@ class _TopicsPageState extends State<TopicsPage> {
     return Column(
       children: [
         topicProgress.isEmpty
-            ? Text('Empty')
-            : Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.s12),
-                child: AnimatedGridView(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.0,
-                  children: topicProgress.map((topic) {
-                    return TopicCard.fromHex(
-                      icon: TopicIcon.fromDbString(topic.iconId).iconData,
-                      colorStr: topic.colorHex,
-                      title: topic.name,
-                      totalRead: topic.totalRead,
-                      resourcesCount: topic.totalPages,
-                      onTap: () {},
-                    );
-                  }).toList(),
-                ),
-              ),
-      ],
-    );
-  }
-
-  Widget sectionTitle(String label, Function()? onPressed, bool emptyState) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.light,
+          ? Text('Empty')
+          : Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.s12),
+            child: AnimatedGridView(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.0,
+              children: topicProgress.map((topic) {
+                return TopicCard.fromHex(
+                  icon: TopicIcon.fromDbString(topic.iconId).iconData,
+                  colorStr: topic.colorHex,
+                  title: topic.name,
+                  totalRead: topic.totalRead,
+                  resourcesCount: topic.totalPages,
+                  onTap: () {},
+                );
+              }).toList(),
             ),
           ),
-          if (!emptyState)
-            TextButton(onPressed: onPressed, child: const Text('Ver Todos')),
-        ],
-      ),
+      ],
     );
   }
 

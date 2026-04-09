@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
+import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/models/book_model.dart';
@@ -120,7 +121,14 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         subtitle:
             'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
         primaryButtonText: 'Cadastrar Livro',
-        onPrimaryPressed: () {},
+        onPrimaryPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CreateUpdateBookPage(),
+            ),
+          );
+        },
         outlineButtonText: 'Criar Tópico',
         onOutlinePressed: () {
           final dashboardCubit = context.read<DashboardCubit>();
@@ -187,7 +195,14 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                 icon: Icons.menu_book,
                 title: 'Nenhum livro sendo lido agora',
                 buttonText: 'Adicionar Livro',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CreateUpdateBookPage(),
+                    ),
+                  );
+                },
               )
             : Column(
                 children: [
