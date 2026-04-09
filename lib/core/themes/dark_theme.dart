@@ -74,7 +74,7 @@ class AppDarkTheme {
         fillColor: AppColors.primaryMedium,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s16,
-          vertical: AppSpacing.s12,
+          vertical: AppSpacing.s16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.s12),
@@ -131,9 +131,10 @@ class AppDarkTheme {
           foregroundColor: AppColors.light,
           elevation: 4,
           shadowColor: AppColors.primary.withValues(alpha: .5),
+          minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s24,
-            vertical: AppSpacing.s12,
+            vertical: AppSpacing.s16,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.s12),
@@ -165,9 +166,10 @@ class AppDarkTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.light,
           side: const BorderSide(color: AppColors.light, width: 1.5),
+          minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s24,
-            vertical: AppSpacing.s12,
+            vertical: AppSpacing.s16,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.s12),

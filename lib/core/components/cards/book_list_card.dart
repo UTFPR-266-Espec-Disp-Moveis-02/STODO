@@ -17,6 +17,7 @@ class BookListCard extends StatelessWidget {
 
   final VoidCallback? onTap;
   final VoidCallback? onRemove;
+  final VoidCallback? onEdit;
 
   const BookListCard({
     super.key,
@@ -28,6 +29,7 @@ class BookListCard extends StatelessWidget {
     this.progress,
     this.onTap,
     this.onRemove,
+    this.onEdit,
   });
 
   @override
@@ -115,13 +117,41 @@ class BookListCard extends StatelessWidget {
                         color: AppColors.gray200,
                       ),
                       onSelected: (value) {
-                        if (value == 0 && onRemove != null) {
-                          onRemove!();
+                        switch (value) {
+                          case 0:
+                            if (onEdit != null) {
+                              onEdit!();
+                            }
+                            break;
+                          case 1:
+                            if (onRemove != null) {
+                              onRemove!();
+                            }
+                            break;
                         }
                       },
                       itemBuilder: (context) => [
+                        //EDIT
                         PopupMenuItem(
                           value: 0,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.edit_outlined,
+                                color: AppColors.topicColor1,
+                                size: 20,
+                              ),
+                              const SizedBox(width: AppSpacing.s8),
+                              Text(
+                                'Editar',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: AppColors.topicColor1),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 1,
                           child: Row(
                             children: [
                               const Icon(
@@ -159,12 +189,19 @@ class BookListCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                status.label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(status.icon, color: status.color, size: 11),
+                  const SizedBox(width: AppSpacing.s4),
+                  Text(
+                    status.label,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: status.color,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
               Text(
                 '${(prog * 100).toInt()}%',
@@ -191,26 +228,6 @@ class BookListCard extends StatelessWidget {
       );
     }
 
-    // Cores das badges
-    Color badgeBgColor;
-    Color badgeTextColor;
-
-    switch (status) {
-      case BookStatus.read:
-        badgeBgColor = AppColors.topicColor3.withValues(alpha: 0.15);
-        badgeTextColor = AppColors.topicColor3;
-        break;
-      case BookStatus.rereading:
-        badgeBgColor = AppColors.topicColor1.withValues(alpha: 0.15);
-        badgeTextColor = AppColors.topicColor1;
-        break;
-      case BookStatus.wantToRead:
-      default:
-        badgeBgColor = AppColors.gray400.withValues(alpha: 0.2);
-        badgeTextColor = AppColors.gray200;
-        break;
-    }
-
     return Row(
       children: [
         Container(
@@ -219,16 +236,23 @@ class BookListCard extends StatelessWidget {
             vertical: AppSpacing.s4,
           ),
           decoration: BoxDecoration(
-            color: badgeBgColor,
+            color: status.color.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppSpacing.s12),
           ),
-          child: Text(
-            status.label.toUpperCase(),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: badgeTextColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 10,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(status.icon, color: status.color, size: 11),
+              const SizedBox(width: AppSpacing.s4),
+              Text(
+                status.label.toUpperCase(),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: status.color,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
+              ),
+            ],
           ),
         ),
         if (extraInfo != null && extraInfo!.isNotEmpty) ...[

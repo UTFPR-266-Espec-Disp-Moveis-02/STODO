@@ -132,17 +132,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         outlineButtonText: 'Criar Tópico',
         onOutlinePressed: () {
           final dashboardCubit = context.read<DashboardCubit>();
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            showDragHandle: true,
-            builder: (BuildContext context) {
-              return CreateTopicBottomSheet(
-                onTopicCreate: (topic) {
-                  dashboardCubit.addTopic(topic);
-                },
-              );
-            }
+          CreateTopicBottomSheet.show(
+            context,
+            onTopicCreate: (topic) => dashboardCubit.addTopic(topic),
           );
         },
       ),

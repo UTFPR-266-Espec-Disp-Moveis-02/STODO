@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stodo/core/enums/book_status_enum.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/design_system/ds_book_mock_cubit.dart';
+import 'package:stodo/app/library/widgets/book_progress_modal.dart';
+import 'package:stodo/core/models/book_model.dart';
 import '../../core/components/assets/app_logo.dart';
 import '../../core/components/assets/app_logo_horizontal.dart';
 import '../../core/components/buttons/custom_outline_button.dart';
@@ -14,7 +17,6 @@ import '../../core/components/form/custom_dropdown.dart';
 import '../../core/components/form/custom_text_field.dart';
 import '../../core/components/form/icon_selector.dart';
 import '../../core/components/form/image_upload_field.dart';
-import '../../core/components/form/progress_updater.dart';
 import '../../core/components/layout/animated_grid_view.dart';
 import '../../core/components/states/full_empty_state.dart';
 import '../../core/components/states/home_empty_state_card.dart';
@@ -36,6 +38,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
   String? _selectedColorHex;
   TopicIcon? _selectedIcon;
   bool _isLoading = false;
+
+  static const _dsAuthors = {
+    1: 'J.R.R. Tolkien',
+    2: 'Frank Herbert',
+    3: 'J.K. Rowling',
+    4: 'George Orwell',
+  };
 
   void _toggleLoading() {
     setState(() {
@@ -117,30 +126,24 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: ColorSelector(
-                    label: 'Cor do Tópico',
-                    selectedColorHex: _selectedColorHex,
-                    onColorSelected: (color) {
-                      setState(() {
-                        _selectedColorHex = color;
-                      });
-                    },
-                  ),
+                ColorSelector(
+                  label: 'Cor do Tópico',
+                  selectedColorHex: _selectedColorHex,
+                  onColorSelected: (color) {
+                    setState(() {
+                      _selectedColorHex = color;
+                    });
+                  },
                 ),
                 const SizedBox(height: AppSpacing.s32),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconSelector(
-                    label: 'Escolha um Ícone',
-                    selectedIcon: _selectedIcon,
-                    onIconSelected: (icon) {
-                      setState(() {
-                        _selectedIcon = icon;
-                      });
-                    },
-                  ),
+                IconSelector(
+                  label: 'Escolha um Ícone',
+                  selectedIcon: _selectedIcon,
+                  onIconSelected: (icon) {
+                    setState(() {
+                      _selectedIcon = icon;
+                    });
+                  },
                 ),
               ],
             ),
@@ -367,48 +370,85 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
               ),
               childrenPadding: const EdgeInsets.all(AppSpacing.s16),
               children: [
-                ProgressUpdater(
-                  currentValue: 352,
-                  maxValue: 476,
-                  onChanged: (val) {
-                    debugPrint('Novo progresso: $val');
-                  },
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                BookListCard(
-                  title: 'O Senhor dos Anéis',
-                  author: 'J.R.R. Tolkien',
-                  status: BookStatus.read,
-                  extraInfo: 'Maio, 2023',
-                  onTap: () {},
-                  onRemove: () {},
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                BookListCard(
-                  title: 'Duna',
-                  author: 'Frank Herbert',
-                  status: BookStatus.reading,
-                  progress: 0.65,
-                  onTap: () {},
-                  onRemove: () {},
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                BookListCard(
-                  title: 'Harry Potter',
-                  author: 'J.K. Rowling',
-                  status: BookStatus.rereading,
-                  extraInfo: 'Capítulo 12',
-                  onTap: () {},
-                  onRemove: () {},
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                BookListCard(
-                  title: '1984',
-                  author: 'George Orwell',
-                  status: BookStatus.wantToRead,
-                  onTap: () {},
-                  onRemove: () {},
-                ),
+                ...[
+                  BookModel(
+                    id: 1,
+                    title: 'O Senhor dos Anéis',
+                    author: 'J.R.R. Tolkien',
+                    statusStr: BookStatus.read.toDbString(),
+                    currentPage: 1178,
+                    totalPages: 1178,
+                    topicId: 1,
+                    updatedAt: '',
+                  ),
+                  BookModel(
+                    id: 2,
+                    title: 'Duna',
+                    author: 'Frank Herbert',
+                    statusStr: BookStatus.reading.toDbString(),
+                    currentPage: 309,
+                    totalPages: 476,
+                    topicId: 1,
+                    updatedAt: '',
+                  ),
+                  BookModel(
+                    id: 3,
+                    title: 'Harry Potter',
+                    author: 'J.K. Rowling',
+                    statusStr: BookStatus.rereading.toDbString(),
+                    currentPage: 0,
+                    totalPages: 320,
+                    topicId: 1,
+                    updatedAt: '',
+                  ),
+                  BookModel(
+                    id: 4,
+                    title: '1984',
+                    author: 'George Orwell',
+                    statusStr: BookStatus.wantToRead.toDbString(),
+                    currentPage: 0,
+                    totalPages: 328,
+                    topicId: 1,
+                    updatedAt: '',
+                  ),
+                ].map((mockBook) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.s16),
+                    child: BlocProvider(
+                      create: (_) => DsBookMockCubit(mockBook),
+                      child: Builder(
+                        builder: (context) =>
+                            BlocBuilder<DsBookMockCubit, BookModel>(
+                              builder: (context, book) {
+                                final status = book.status;
+                                final progress = book.totalPages > 0
+                                    ? book.currentPage / book.totalPages
+                                    : 0.0;
+                                return BookListCard(
+                                  title: book.title,
+                                  author: _dsAuthors[book.id] ?? '',
+                                  status: status,
+                                  progress: status == BookStatus.reading
+                                      ? progress
+                                      : null,
+                                  onTap: () => BookProgressModal.show(
+                                    context,
+                                    book,
+                                    onSave: (newStatus, newPage) {
+                                      context.read<DsBookMockCubit>().update(
+                                        newStatus,
+                                        newPage,
+                                      );
+                                    },
+                                  ),
+                                  onRemove: () {},
+                                );
+                              },
+                            ),
+                      ),
+                    ),
+                  );
+                }),
               ],
             ),
             const Divider(height: 1),
