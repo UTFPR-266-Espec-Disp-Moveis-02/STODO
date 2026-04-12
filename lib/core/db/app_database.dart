@@ -28,13 +28,14 @@ class AppDatabase {
         await db.execute('''
           CREATE TABLE books (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT,
+            title TEXT NOT NULL,
+            author TEXT,
             status TEXT,
-            current_page INTEGER,
+            current_page INTEGER DEFAULT 0,
             total_pages INTEGER,
-            topic_id INTEGER,
             updated_at TEXT,
             image_path TEXT,
+            topic_id INTEGER NULL,
             FOREIGN KEY (topic_id) REFERENCES topics(id)
           );
         ''');

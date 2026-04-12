@@ -3,31 +3,103 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/library/repository/books_repository.dart';
 import 'package:stodo/app/library/states/books_states.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/models/book_model.dart';
+import 'package:stodo/core/models/topic_model.dart';
 
 class BooksCubit extends Cubit<BooksState> {
   Timer? _debounce;
-  final BooksRepository _repository;
+  final BooksRepository _booksRepository;
+  final TopicsRepository _topicsRepository;
 
-  BooksCubit(this._repository) : super(BooksInitialState());
+  BooksCubit(this._booksRepository, this._topicsRepository, {int? id})
+    : super(BooksState(status: Initial()));
 
-  Future<void> loadBooks({String? searchQuery}) async {
-    emit(BooksLoadingState());
+  Future<void> loadInitialData({int? id}) async {
+    emit(state.copyWith(status: Loading()));
 
     try {
-      final results = await Future.wait([
-        _repository.getBooks(searchQuery: searchQuery)
-      ]);
+      final statusList = BookStatus.values;
+      final topicsList = await _topicsRepository.getTopicsDropdown();
+      BookModel? book;
 
-      final topics = results[0];
+      if (id != null) {
+        book = await _booksRepository.getBookById(id);
+      }
 
       emit(
-        BooksSuccessState(
-          books: topics
+        state.copyWith(
+          status: LoadSuccess(),
+          statusOptions: statusList,
+          topicOptions: topicsList,
+          book: book,
+          selectedStatus: book?.status ?? BookStatus.wantToRead,
+          selectedTopic: book?.topic,
+          imagePath: book?.imagePath,
         ),
       );
     } catch (e) {
-      emit(BooksErrorState(message: 'Erro ao carregar dados'));
+      emit(state.copyWith(
+        status: Error(message: 'Erro ao carregar dados')
+      ));
+    }
+  }
+
+  void updateStatus(BookStatus status) {
+    emit(state.copyWith(selectedStatus: status));
+  }
+
+  void updateTopic(TopicModel? topic) {
+    emit(state.copyWith(selectedTopic: topic));
+  }
+
+  void updateImage(String? path) {
+    emit(state.copyWith(imagePath: path));
+  }
+
+  Future<void> save({
+    required String title,
+    required String author,
+    required int numberOfPages
+  }) async {
+    //emit(state.copyWith(status: Loading()));
+
+    try {
+      final book = BookModel(
+        id: state.book?.id,
+        title: title,
+        author: author,
+        currentPage: state.book?.currentPage ?? 0,
+        statusStr: state.selectedStatus?.name ?? '',
+        totalPages: numberOfPages,
+        topic: state.selectedTopic,
+        updatedAt: DateTime.now().toIso8601String(),
+        imagePath: state.imagePath,
+      );
+
+      await _booksRepository.createOrUpdateBook(book);
+      emit(state.copyWith(status: SubmitSuccess(), book: book));
+    } catch (e) {
+      emit(state.copyWith(status: Error(message: 'Erro ao salvar')));
+    }
+  }
+
+  Future<void> loadBooks({String? searchQuery}) async {
+    if(searchQuery != null && searchQuery.isNotEmpty) {
+      emit(state.copyWith(status: Loading()));
+    }
+
+    try {
+      final results = await Future.wait([
+        _booksRepository.getBooks(searchQuery: searchQuery)
+      ]);
+
+      final books = results[0];
+
+      emit(state.copyWith(status: LoadSuccess(), booksList: books));
+    } catch (e) {
+      emit(state.copyWith(status: Error(message: 'Erro ao carregar dados')));
     }
   }
 
@@ -37,26 +109,5 @@ class BooksCubit extends Cubit<BooksState> {
     _debounce = Timer(const Duration(milliseconds: 500), () {
       loadBooks(searchQuery: query);
     });
-  }
-
-  Future<void> createBook(BookModel book) async {
-    emit(BooksLoadingState());
-
-    try {
-      await Future.wait([
-        _repository.createBook(book)
-      ]);
-    } catch (e) {
-      emit(BooksErrorState(message: 'Erro ao carregar dados'));
-    }
-  }
-
-  Future<void> addBook(BookModel book) async {
-    try {
-      await _repository.createBook(book);
-      await loadBooks();
-    } catch (e) {
-      emit(BooksErrorState(message: 'Erro ao salvar livro'));
-    }
   }
 }

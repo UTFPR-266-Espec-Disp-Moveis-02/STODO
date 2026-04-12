@@ -35,6 +35,15 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
     _currentImagePath = widget.initialImagePath;
   }
 
+  @override
+  void didUpdateWidget(covariant ImageUploadField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.initialImagePath != oldWidget.initialImagePath) {
+      _currentImagePath = widget.initialImagePath;
+    }
+  }
+
   Future<void> _pickImage() async {
     setState(() => _isLoading = true);
     final String? imagePath = await _pickerService.pickImage();

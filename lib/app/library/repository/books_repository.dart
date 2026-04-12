@@ -5,6 +5,7 @@ import 'package:stodo/core/models/book_model.dart';
 class BooksRepository {
   final Future<Database> _db = AppDatabase.instance;
 
+  // MARK: GetRecentBooks
   Future<List<BookModel>> getRecentBooks() async {
     final db = await _db;
 
@@ -19,14 +20,27 @@ class BooksRepository {
     return result.map((e) => BookModel.fromMap(e)).toList();
   }
 
+  // MARK: GetBooks
   Future<List<BookModel>> getBooks({String? searchQuery, String? status}) async {
     final db = await _db;
 
     String query = '''
-      SELECT *
+      SELECT
+        b.id,
+        b.title,
+        b.author,
+        b.status,
+        b.current_page,
+        b.total_pages,
+        b.updated_at,
+        b.image_path,
+        b.topic_id,
+        t.name as topic_name,
+        t.icon_id as icon_id,
+        t.color_hex as color_hex
       FROM books b
       LEFT JOIN topics t ON t.id = b.topic_id
-      WHERE 
+      WHERE
     ''';
     String defaultComparison = '(1 = 1)';
     List<dynamic> args = [];
@@ -35,7 +49,7 @@ class BooksRepository {
       query += ' b.status = ? AND ';
       args.add('%${status.trim()}%');
     } else {
-      query += '$defaultComparison AND';
+      query += ' $defaultComparison AND ';
     }
 
     if (searchQuery != null && searchQuery.trim().isNotEmpty) {
@@ -43,22 +57,68 @@ class BooksRepository {
       args.add('%${searchQuery.trim()}%');
       args.add('%${searchQuery.trim()}%');
     } else {
-      query += ' $defaultComparison';
+      query += '$defaultComparison ';
     }
-    query += ' GROUP BY t.id';
+    query += 'GROUP BY b.id';
 
     final result = await db.rawQuery(query, args);
     return result.map((e) => BookModel.fromMap(e)).toList();
   }
 
-  Future<int> createBook(BookModel book) async {
+  // MARK: GetBookById
+  Future<BookModel?> getBookById(int id) async {
     final db = await _db;
 
-    // TODO: Insert
-    return await db.insert(
-      'books',
-      {},
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    final result = await db.rawQuery(
+      '''
+      SELECT
+        b.id,
+        b.title,
+        b.author,
+        b.status,
+        b.current_page,
+        b.total_pages,
+        b.updated_at,
+        b.image_path,
+        b.topic_id,
+        t.name as topic_name,
+        t.icon_id as icon_id,
+        t.color_hex as color_hex
+      FROM books b
+      LEFT JOIN topics t ON t.id = b.topic_id
+      WHERE b.id = ?
+      LIMIT 1
+      ''',
+      [id],
     );
+
+    if (result.isEmpty) return null;
+
+    return BookModel.fromMap(result.first);
+  }
+
+  // MARK: CreateBook
+  Future<int> createOrUpdateBook(BookModel book) async {
+    final db = await _db;
+
+    final map = book.toMap();
+
+    if (book.id == null) {
+      // Create
+      return await db.insert(
+        'books',
+        map,
+        conflictAlgorithm: ConflictAlgorithm.rollback,
+      );
+    } else {
+      // Update
+      return await db.update(
+        'books',
+        map,
+        where: 'id = ?',
+        whereArgs: [book.id],
+        conflictAlgorithm: ConflictAlgorithm.rollback,
+      );
+    }
   }
 }

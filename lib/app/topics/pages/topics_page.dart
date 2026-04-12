@@ -44,7 +44,7 @@ class _TopicsPageState extends State<TopicsPage> {
                     size: AppSpacing.s24
                   ),
                   onPressed: () {
-                    final topicCubit = context.read<TopicsCubit>(); 
+                    final topicCubit = context.read<TopicsCubit>();
                     CreateTopicBottomSheet.show(
                       context,
                       onTopicCreate: (topic) => topicCubit.addTopic(topic),

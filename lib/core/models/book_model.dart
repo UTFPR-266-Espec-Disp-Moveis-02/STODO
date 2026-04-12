@@ -1,16 +1,18 @@
 import 'package:stodo/core/enums/book_status_enum.dart';
+import 'package:stodo/core/models/topic_model.dart';
 
 class BookModel {
-  final int id;
+  final int? id;
   final String title;
   final String author;
   final String statusStr;
   final BookStatus status;
   final int currentPage;
   final int totalPages;
-  final int topicId;
   final String updatedAt;
   final String? imagePath;
+  final TopicModel? topic;
+  //final int? topicId;
 
   BookModel({
     required this.id,
@@ -19,9 +21,10 @@ class BookModel {
     required this.statusStr,
     required this.currentPage,
     required this.totalPages,
-    required this.topicId,
     required this.updatedAt,
     this.imagePath,
+    this.topic,
+    //this.topicId,
   }) : status = BookStatus.fromDbString(statusStr);
 
   factory BookModel.fromMap(Map<String, dynamic> map) {
@@ -32,9 +35,31 @@ class BookModel {
       statusStr: map['status'],
       currentPage: map['current_page'],
       totalPages: map['total_pages'],
-      topicId: map['topic_id'],
       updatedAt: map['updated_at'],
       imagePath: map['image_path'],
+      //topicId: map['topic_id'],
+      topic: map['topic_id'] != null
+        ? TopicModel.fromMap({
+          'id': map['topic_id'],
+          'name': map['topic_name'],
+          'icon_id': map['icon_id'],
+          'color_hex': map['color_hex'],
+        })
+        : null,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'author': author,
+      'status': statusStr,
+      'current_page': currentPage,
+      'total_pages': totalPages,
+      'updated_at': updatedAt,
+      'image_path': imagePath,
+      'topic_id': topic?.id,
+    };
   }
 }

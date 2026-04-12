@@ -14,7 +14,7 @@ class DsBookMockCubit extends Cubit<BookModel> {
         statusStr: status.toDbString(),
         currentPage: currentPage,
         totalPages: state.totalPages,
-        topicId: state.topicId,
+        topic: state.topic,
         updatedAt: DateTime.now().toIso8601String(),
         imagePath: state.imagePath,
       ),

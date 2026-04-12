@@ -4,9 +4,9 @@ import 'package:stodo/app/library/cubit/books_cubit.dart';
 import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/library/repository/books_repository.dart';
 import 'package:stodo/app/library/states/books_states.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/core/components/cards/book_list_card.dart';
 import 'package:stodo/core/components/form/custom_text_field.dart';
-import 'package:stodo/core/components/layout/animated_grid_view.dart';
 import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/models/book_model.dart';
@@ -23,7 +23,7 @@ class _BooksPageState extends State<BooksPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => BooksCubit(BooksRepository())..loadBooks(),
+      create: (_) => BooksCubit(BooksRepository(), TopicsRepository())..loadBooks(),
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -57,16 +57,17 @@ class _BooksPageState extends State<BooksPage> {
             ),
             body: BlocBuilder<BooksCubit, BooksState>(
               builder: (context, state) {
-                if (state is BooksLoadingState) {
+                if (state.status is Loading) {
                   return booksLoadingView();
                 }
 
-                if (state is BooksErrorState) {
-                  return Center(child: Text(state.message));
+                if (state.status is Error) {
+                  final error = (state.status as Error);
+                  return Center(child: Text(error.message));
                 }
 
-                if (state is BooksSuccessState) {
-                  if (state.books.isEmpty) {
+                if (state.status is LoadSuccess) {
+                  if (state.booksList.isEmpty) {
                     return HomeEmptyStateCard(
                       icon: Icons.menu_book,
                       title: 'Nenhum livro sendo lido agora',
@@ -80,7 +81,6 @@ class _BooksPageState extends State<BooksPage> {
                         );
                       },
                     );
-                    
                   } else {
                     return SingleChildScrollView(
                       child: Padding(
@@ -96,7 +96,7 @@ class _BooksPageState extends State<BooksPage> {
                               },
                             ),
                             const SizedBox(height: AppSpacing.s16),
-                            bookSection(state.books),
+                            bookSection(state.booksList),
                           ],
                         ),
                       ),
@@ -113,29 +113,33 @@ class _BooksPageState extends State<BooksPage> {
     );
   }
 
-  Widget bookSection(List<BookModel> bookProgress) {
+  Widget bookSection(List<BookModel> booksList) {
     return Column(
       children: [
-        bookProgress.isEmpty
+        booksList.isEmpty
           ? Text('Empty')
           : Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.s12),
-            child: AnimatedGridView(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.0,
-              children: bookProgress.map((book) {
+            padding: const EdgeInsets.only(bottom: AppSpacing.s16),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: booksList.length,
+              itemBuilder: (context, index) {
+                final book = booksList[index];
+
                 return BookListCard(
                   title: book.title,
                   author: book.author,
                   status: book.status,
                   extraInfo: null,
+                  currentPage: book.currentPage,
+                  totalPages: book.totalPages,
                   onTap: () {},
                   onRemove: () {},
                 );
-              }).toList(),
-            ),
+              },
+              separatorBuilder: (_,_) => SizedBox(height: 12),
+            )
           ),
       ],
     );

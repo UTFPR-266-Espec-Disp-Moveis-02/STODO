@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:stodo/core/themes/colors.dart';
 
 enum BookStatus {
+  wantToRead('Quero Ler', AppColors.gray200, Icons.bookmark_outline),
   reading('Lendo', AppColors.primary, Icons.menu_book),
   read('Lido', AppColors.topicColor3, Icons.check_circle_outline),
-  rereading('Relendo', AppColors.topicColor5, Icons.replay),
-  wantToRead('Quero Ler', AppColors.gray200, Icons.bookmark_outline);
+  rereading('Relendo', AppColors.topicColor5, Icons.replay);
 
   final String label;
   final Color color;

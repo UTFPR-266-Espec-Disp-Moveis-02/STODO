@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/design_system/ds_book_mock_cubit.dart';
 import 'package:stodo/app/library/widgets/book_progress_modal.dart';
 import 'package:stodo/core/models/book_model.dart';
+import 'package:stodo/core/models/topic_model.dart';
 import '../../core/components/assets/app_logo.dart';
 import '../../core/components/assets/app_logo_horizontal.dart';
 import '../../core/components/buttons/custom_outline_button.dart';
@@ -38,13 +39,6 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
   String? _selectedColorHex;
   TopicIcon? _selectedIcon;
   bool _isLoading = false;
-
-  static const _dsAuthors = {
-    1: 'J.R.R. Tolkien',
-    2: 'Frank Herbert',
-    3: 'J.K. Rowling',
-    4: 'George Orwell',
-  };
 
   void _toggleLoading() {
     setState(() {
@@ -278,7 +272,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       onTap: () {}, // Teste de tap no Design System
                     ),
                     TopicCard(
-                      icon: Icons.smartphone,
+                      icon: TopicIcon.smartphone.iconData,
                       color: AppColors.topicColor7, // Roxo
                       title: 'Mobile Dev',
                       totalRead: 5,
@@ -378,7 +372,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     statusStr: BookStatus.read.toDbString(),
                     currentPage: 1178,
                     totalPages: 1178,
-                    topicId: 1,
+                    topic: TopicModel(
+                      id: 1,
+                      name: 'Cálculo I',
+                      iconId: TopicIcon.math.toDbString(),
+                      colorHex: AppColors.colorToHex(AppColors.topicColor1),
+                    ),
+                    //topicId: 1,
                     updatedAt: '',
                   ),
                   BookModel(
@@ -388,7 +388,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     statusStr: BookStatus.reading.toDbString(),
                     currentPage: 309,
                     totalPages: 476,
-                    topicId: 1,
+                    topic: TopicModel(
+                      id: 2,
+                      name: 'Mobile Dev',
+                      iconId: TopicIcon.smartphone.toDbString(),
+                      colorHex: AppColors.colorToHex(AppColors.topicColor7),
+                    ),
+                    //topicId: 1,
                     updatedAt: '',
                   ),
                   BookModel(
@@ -398,7 +404,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     statusStr: BookStatus.rereading.toDbString(),
                     currentPage: 0,
                     totalPages: 320,
-                    topicId: 1,
+                    topic: TopicModel(
+                      id: 1,
+                      name: 'IA Aplicada',
+                      iconId: TopicIcon.brain.toDbString(),
+                      colorHex: AppColors.colorToHex(AppColors.topicColor3),
+                    ),
+                    //topicId: 1,
                     updatedAt: '',
                   ),
                   BookModel(
@@ -408,7 +420,13 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     statusStr: BookStatus.wantToRead.toDbString(),
                     currentPage: 0,
                     totalPages: 328,
-                    topicId: 1,
+                    topic: TopicModel(
+                      id: 4,
+                      name: 'Literatura',
+                      iconId: TopicIcon.book.toDbString(),
+                      colorHex: AppColors.colorToHex(AppColors.topicColor4),
+                    ),
+                    //topicId: 1,
                     updatedAt: '',
                   ),
                 ].map((mockBook) {
@@ -421,16 +439,12 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                             BlocBuilder<DsBookMockCubit, BookModel>(
                               builder: (context, book) {
                                 final status = book.status;
-                                final progress = book.totalPages > 0
-                                    ? book.currentPage / book.totalPages
-                                    : 0.0;
                                 return BookListCard(
                                   title: book.title,
-                                  author: _dsAuthors[book.id] ?? '',
+                                  author: book.author,
                                   status: status,
-                                  progress: status == BookStatus.reading
-                                      ? progress
-                                      : null,
+                                  currentPage: book.currentPage,
+                                  totalPages: book.totalPages,
                                   onTap: () => BookProgressModal.show(
                                     context,
                                     book,
