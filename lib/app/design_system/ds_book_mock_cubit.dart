@@ -16,6 +16,7 @@ class DsBookMockCubit extends Cubit<BookModel> {
         topicId: state.topicId,
         updatedAt: DateTime.now().toIso8601String(),
         imagePath: state.imagePath,
+        author: state.author,
       ),
     );
   }

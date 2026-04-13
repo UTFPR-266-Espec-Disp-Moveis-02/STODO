@@ -380,6 +380,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     totalPages: 1178,
                     topicId: 1,
                     updatedAt: '',
+                    author: 'Abner Ribeiro',
                   ),
                   BookModel(
                     id: 2,
@@ -389,6 +390,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     totalPages: 476,
                     topicId: 1,
                     updatedAt: '',
+                    author: 'Abner Ribeiro',
                   ),
                   BookModel(
                     id: 3,
@@ -398,6 +400,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     totalPages: 320,
                     topicId: 1,
                     updatedAt: '',
+                    author: 'Abner Ribeiro',
                   ),
                   BookModel(
                     id: 4,
@@ -407,6 +410,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                     totalPages: 328,
                     topicId: 1,
                     updatedAt: '',
+                    author: 'Abner Ribeiro',
                   ),
                 ].map((mockBook) {
                   return Padding(
