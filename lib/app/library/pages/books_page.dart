@@ -20,6 +20,21 @@ class BooksPage extends StatefulWidget {
 }
 
 class _BooksPageState extends State<BooksPage> {
+  Future<void> _navigateToCreateUpdateBook(BuildContext context, [int? id]) async {
+    final cubit = context.read<BooksCubit>();
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CreateUpdateBookPage(id: id),
+      ),
+    );
+
+    if (result == true) {
+      cubit.loadBooks();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -40,14 +55,7 @@ class _BooksPageState extends State<BooksPage> {
                     Icons.add,
                     size: AppSpacing.s24
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CreateUpdateBookPage(),
-                      ),
-                    );
-                  }
+                  onPressed: () => _navigateToCreateUpdateBook(context)
                 ),
               ],
               bottom: PreferredSize(
@@ -72,14 +80,7 @@ class _BooksPageState extends State<BooksPage> {
                       icon: Icons.menu_book,
                       title: 'Nenhum livro sendo lido agora',
                       buttonText: 'Adicionar Livro',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CreateUpdateBookPage(),
-                          ),
-                        );
-                      },
+                      onPressed: () => _navigateToCreateUpdateBook(context)
                     );
                   } else {
                     return SingleChildScrollView(
@@ -131,10 +132,12 @@ class _BooksPageState extends State<BooksPage> {
                   title: book.title,
                   author: book.author,
                   status: book.status,
+                  imagePath: book.imagePath,
                   extraInfo: null,
                   currentPage: book.currentPage,
                   totalPages: book.totalPages,
                   onTap: () {},
+                  onEdit: () => _navigateToCreateUpdateBook(context, book.id),
                   onRemove: () {},
                 );
               },

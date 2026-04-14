@@ -29,6 +29,21 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  Future<void> _navigateToCreateUpdateBook(BuildContext context) async {
+    final cubit = context.read<DashboardCubit>();
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CreateUpdateBookPage(),
+      ),
+    );
+
+    if (result == true) {
+      cubit.loadDashboard();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -121,14 +136,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         subtitle:
             'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
         primaryButtonText: 'Cadastrar Livro',
-        onPrimaryPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CreateUpdateBookPage(),
-            ),
-          );
-        },
+        onPrimaryPressed: () => _navigateToCreateUpdateBook(context),
         outlineButtonText: 'Criar Tópico',
         onOutlinePressed: () {
           final dashboardCubit = context.read<DashboardCubit>();
@@ -187,14 +195,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                 icon: Icons.menu_book,
                 title: 'Nenhum livro sendo lido agora',
                 buttonText: 'Adicionar Livro',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CreateUpdateBookPage(),
-                    ),
-                  );
-                },
+                onPressed: () => _navigateToCreateUpdateBook(context),
               )
             : Column(
                 children: [

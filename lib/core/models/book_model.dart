@@ -62,4 +62,12 @@ class BookModel {
       'topic_id': topic?.id,
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is BookModel && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

@@ -45,7 +45,7 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
             listenWhen: (prev, curr) => prev.status != curr.status,
             listener: (context, state) {
               if (state.status is SubmitSuccess) {
-                Navigator.pop(context);
+                Navigator.pop(context, true);
               }
 
               if (state.status is Error) {
@@ -82,7 +82,7 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
                           size: AppSpacing.s24
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context, false);
                         }
                       ),
                       bottom: PreferredSize(
@@ -193,7 +193,7 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
                                   )
                                 ],
                                 onChanged: (value) {
-                                  context.read<BooksCubit>().updateTopic(value!);
+                                  context.read<BooksCubit>().updateTopic(value);
                                 },
                               ),
                               const SizedBox(height: AppSpacing.s16),
@@ -218,8 +218,6 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
                                   ),
                                 ],
                               ),
-                              //const SizedBox(height: AppSpacing.s24),
-                              //const SizedBox(height: AppSpacing.s16),
                             ],
                           ),
                         )
@@ -235,21 +233,3 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
     );
   }
 }
-
-/*
-// Criar
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => CreateUpdateBookPage(),
-  ),
-);
-
-// Editar
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => CreateUpdateBookPage(id: 1),
-  ),
-);
-*/
