@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/core/models/book_status.dart';
+import 'package:stodo/core/themes/spacing.dart';
 
 import '../../../core/components/cards/book_list_card.dart';
 import '../../../core/components/form/custom_text_field.dart';
+import '../../../core/components/states/skeletons/book_list_card_skeleton.dart';
 import '../cubit/library_cubit.dart';
 import '../states/library_states.dart';
 
@@ -50,7 +52,7 @@ class _LibraryPageState extends State<LibraryPage>
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(AppSpacing.s16),
                   child: CustomTextField(
                     hint: 'Pesquisar na biblioteca',
                     prefixIcon: const Icon(Icons.search),
@@ -80,7 +82,14 @@ class _LibraryPageState extends State<LibraryPage>
                   child: BlocBuilder<LibraryCubit, LibraryStates>(
                     builder: (context, state) {
                       if (state is LibraryLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return ListView.builder(
+                          itemCount: 4,
+                          padding: EdgeInsets.all(AppSpacing.s16),
+
+                          itemBuilder: (context, index) {
+                            return BookListCardSkeleton();
+                          },
+                        );
                       }
 
                       if (state is LibraryError) {
@@ -96,6 +105,7 @@ class _LibraryPageState extends State<LibraryPage>
 
                         return ListView.builder(
                           itemCount: state.books.length,
+                          padding: EdgeInsets.all(AppSpacing.s16),
                           itemBuilder: (context, index) {
                             final book = state.books[index];
 
