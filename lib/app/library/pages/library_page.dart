@@ -4,6 +4,7 @@ import 'package:stodo/app/library/cubit/library_cubit.dart';
 import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/library_states.dart';
+import 'package:stodo/app/library/widgets/book_progress_modal.dart';
 import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/themes/spacing.dart';
 
@@ -30,14 +31,15 @@ class _LibraryPageState extends State<LibraryPage>
     BookStatus.wantToRead,
   ];
 
-  Future<void> _navigateToCreateUpdateBook(BuildContext context, [int? id]) async {
+  Future<void> _navigateToCreateUpdateBook(
+    BuildContext context, [
+    int? id,
+  ]) async {
     final cubit = context.read<LibraryCubit>();
 
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => CreateUpdateBookPage(id: id),
-      ),
+      MaterialPageRoute(builder: (_) => CreateUpdateBookPage(id: id)),
     );
 
     if (result == true) {
@@ -67,11 +69,8 @@ class _LibraryPageState extends State<LibraryPage>
               ),
               actions: [
                 IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                    size: AppSpacing.s24
-                  ),
-                  onPressed: () => _navigateToCreateUpdateBook(context)
+                  icon: const Icon(Icons.add, size: AppSpacing.s24),
+                  onPressed: () => _navigateToCreateUpdateBook(context),
                 ),
               ],
               bottom: PreferredSize(
@@ -148,9 +147,24 @@ class _LibraryPageState extends State<LibraryPage>
                                   status: book.status,
                                   currentPage: book.currentPage,
                                   totalPages: book.totalPages,
-                                  onTap: () {},
-                                  onEdit: () => _navigateToCreateUpdateBook(context, book.id),
-                                  onRemove: () {},
+                                  onTap: () => BookProgressModal.show(
+                                    context,
+                                    book,
+                                    onSave: (newStatus, newPage) {
+                                      context.read<LibraryCubit>().updateBookProgress(
+                                        book.id!,
+                                        newStatus,
+                                        newPage,
+                                      );
+                                    },
+                                  ),
+                                  onEdit: () => _navigateToCreateUpdateBook(
+                                    context,
+                                    book.id,
+                                  ),
+                                  onRemove: () {
+                                    context.read<LibraryCubit>().deleteBook(book.id!);
+                                  },
                                 );
                               },
                             );
@@ -162,8 +176,8 @@ class _LibraryPageState extends State<LibraryPage>
                     ),
                   ],
                 );
-              }
-            )
+              },
+            ),
           );
         },
       ),

@@ -26,7 +26,7 @@ class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({
     super.key,
     required this.onNavigateToTopics,
-    required this.onNavigateToLibrary
+    required this.onNavigateToLibrary,
   });
 
   @override
@@ -39,9 +39,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
 
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => CreateUpdateBookPage(),
-      ),
+      MaterialPageRoute(builder: (_) => CreateUpdateBookPage()),
     );
 
     if (result == true) {
@@ -53,10 +51,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-        DashboardCubit(
-          DashboardRepository(),
-          TopicsRepository()
-        )..loadDashboard(),
+          DashboardCubit(DashboardRepository(), TopicsRepository())
+            ..loadDashboard(),
       child: Scaffold(
         backgroundColor: AppColors.primaryDark,
         appBar: AppBar(
@@ -98,39 +94,63 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         ),
         body: BlocBuilder<DashboardCubit, DashboardState>(
           builder: (context, state) {
-            if (state is DashboardLoadingState) {
-              return DashboardLoadingView();
-            }
-
-            if (state is DashboardErrorState) {
-              return Center(child: Text(state.message));
-            }
-
-            if (state is DashboardSuccessState) {
-              if (state.recentBooks.isEmpty && state.topicProgress.isEmpty) {
-                return fullEmptyState(context);
-              } else {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.s16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        recentBookSection(context, state.recentBooks),
-                        const SizedBox(height: AppSpacing.s16),
-                        topicProgressSection(state.topicProgress),
-                      ],
-                    ),
-                  ),
-                );
-              }
-            }
-
-            return const SizedBox.shrink();
+            return RefreshIndicator(
+              onRefresh: () => context.read<DashboardCubit>().loadDashboard(),
+              child: _buildBody(context, state),
+            );
           },
         ),
       ),
     );
+  }
+
+  Widget _buildBody(BuildContext context, DashboardState state) {
+    if (state is DashboardLoadingState) {
+      return DashboardLoadingView();
+    }
+
+    if (state is DashboardErrorState) {
+      return LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(child: Text(state.message)),
+          ),
+        ),
+      );
+    }
+
+    if (state is DashboardSuccessState) {
+      if (state.recentBooks.isEmpty && state.topicProgress.isEmpty) {
+        return LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: fullEmptyState(context),
+            ),
+          ),
+        );
+      }
+
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.s16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              recentBookSection(context, state.recentBooks),
+              const SizedBox(height: AppSpacing.s16),
+              topicProgressSection(state.topicProgress),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   Widget fullEmptyState(BuildContext context) {
@@ -157,7 +177,11 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget topicProgressSection(List<TopicProgressModel> topicProgress) {
     return Column(
       children: [
-        sectionTitle('Tópicos', widget.onNavigateToTopics, topicProgress.isEmpty),
+        sectionTitle(
+          'Tópicos',
+          widget.onNavigateToTopics,
+          topicProgress.isEmpty,
+        ),
 
         topicProgress.isEmpty
             ? HomeEmptyStateCard(
@@ -194,7 +218,11 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget recentBookSection(BuildContext context, List<BookModel> recentBooks) {
     return Column(
       children: [
-        sectionTitle('Lendo agora', widget.onNavigateToLibrary, recentBooks.isEmpty),
+        sectionTitle(
+          'Lendo agora',
+          widget.onNavigateToLibrary,
+          recentBooks.isEmpty,
+        ),
         recentBooks.isEmpty
             ? HomeEmptyStateCard(
                 icon: Icons.menu_book,
