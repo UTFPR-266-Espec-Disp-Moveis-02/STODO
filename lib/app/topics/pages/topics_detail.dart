@@ -73,7 +73,7 @@ class TopicsDetailPage extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
-                expandedHeight: 160.0,
+                expandedHeight: 200.0,
                 pinned: true,
                 backgroundColor: AppColors.primaryDark,
                 scrolledUnderElevation: 0,
@@ -188,6 +188,7 @@ class TopicsDetailPage extends StatelessWidget {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   topic.name,

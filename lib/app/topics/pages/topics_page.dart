@@ -40,98 +40,95 @@ class _TopicsPageState extends State<TopicsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: AppColors.primaryDark,
-            appBar: AppBar(
-              centerTitle: false,
-              title: Text(
-                "Tópicos",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                    size: AppSpacing.s24
-                  ),
-                  onPressed: () {
-                    final topicCubit = context.read<TopicsCubit>(); 
-                    showCreateTopicBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return CreateTopicBottomSheet(
-                          onTopicCreate: (topic) {
-                            topicCubit.addTopic(topic);
-                            context.read<DashboardCubit>().loadDashboard();
-                          },
-                        );
-                      }
-                    );
-                  }
-                ),
-              ],
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1),
-                child: Container(color: Colors.white10, height: 1),
-              ),
-            ),
-            body: BlocBuilder<TopicsCubit, TopicsState>(
-              builder: (context, state) {
-                if (state is TopicsLoadingState) {
-                  return topicsLoadingView();
-                }
+      backgroundColor: AppColors.primaryDark,
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(
+          "Tópicos",
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, size: AppSpacing.s24),
+            onPressed: () {
+              final topicCubit = context.read<TopicsCubit>();
+              showCreateTopicBottomSheet(
+                context: context,
+                builder: (context) {
+                  return CreateTopicBottomSheet(
+                    onTopicCreate: (topic) {
+                      topicCubit.addTopic(topic);
+                      context.read<DashboardCubit>().loadDashboard();
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: Colors.white10, height: 1),
+        ),
+      ),
+      body: BlocBuilder<TopicsCubit, TopicsState>(
+        builder: (context, state) {
+          if (state is TopicsLoadingState) {
+            return topicsLoadingView();
+          }
 
-                if (state is TopicsErrorState) {
-                  return Center(child: Text(state.message));
-                }
+          if (state is TopicsErrorState) {
+            return Center(child: Text(state.message));
+          }
 
-                if (state is TopicsSuccessState) {
-                  if (state.topicsProgress.isEmpty) {
-                    return HomeEmptyStateCard(
-                      icon: Icons.menu_book,
-                      title: 'Você ainda não criou tópicos',
-                      subtitle:
-                          'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
-                      buttonText: 'Criar Tópico',
-                      onPressed: () {
-                        final topicCubit = context.read<TopicsCubit>();
-                        showCreateTopicBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return CreateTopicBottomSheet(
-                              onTopicCreate: (topic) {
-                                topicCubit.addTopic(topic);
-                              },
-                            );
-                          }
-                        );
-                      },
-                    );
-                  } else {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextField(
-                              hint: 'Pesquisar Tópicos',
-                              prefixIcon: Icon(Icons.search),
-                              onChanged: (value) {
-                                context.read<TopicsCubit>().onSearchChanged(value);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.s16),
-                            topicProgressSection(state.topicsProgress),
-                          ],
-                        ),
+          if (state is TopicsSuccessState) {
+            if (state.topicsProgress.isEmpty) {
+              return HomeEmptyStateCard(
+                icon: Icons.menu_book,
+                title: 'Você ainda não criou tópicos',
+                subtitle:
+                    'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
+                buttonText: 'Criar Tópico',
+                onPressed: () {
+                  final topicCubit = context.read<TopicsCubit>();
+                  showCreateTopicBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return CreateTopicBottomSheet(
+                        onTopicCreate: (topic) {
+                          topicCubit.addTopic(topic);
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.s16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        hint: 'Pesquisar Tópicos',
+                        prefixIcon: Icon(Icons.search),
+                        onChanged: (value) {
+                          context.read<TopicsCubit>().onSearchChanged(value);
+                        },
                       ),
-                    );
-                  }
-                }
+                      const SizedBox(height: AppSpacing.s16),
+                      topicProgressSection(state.topicsProgress),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
 
-                return const SizedBox.shrink();
-              },
-            ),
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 
