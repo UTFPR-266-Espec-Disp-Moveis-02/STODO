@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/library/cubit/library_cubit.dart';
-import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/library_states.dart';
 import 'package:stodo/app/library/widgets/book_progress_modal.dart';
@@ -37,9 +36,10 @@ class _LibraryPageState extends State<LibraryPage>
   ]) async {
     final cubit = context.read<LibraryCubit>();
 
-    final result = await Navigator.push(
+    final result = await Navigator.pushNamed(
       context,
-      MaterialPageRoute(builder: (_) => CreateUpdateBookPage(id: id)),
+      '/create-update-book',
+      arguments: id != null ? {'id': id} : null,
     );
 
     if (result == true) {

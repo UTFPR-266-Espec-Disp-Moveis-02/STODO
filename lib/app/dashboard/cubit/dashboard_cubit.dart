@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/models/topic_model.dart';
 
 import '../../../core/models/book_model.dart';
@@ -42,6 +44,19 @@ class DashboardCubit extends Cubit<DashboardState> {
       await loadDashboard();
     } catch (e) {
       emit(DashboardErrorState(message: 'Erro ao salvar tópico'));
+    }
+  }
+
+  Future<void> updateBookProgress(
+    int id,
+    BookStatus status,
+    int currentPage,
+  ) async {
+    try {
+      await LibraryRepository().updateBookProgress(id, status, currentPage);
+      await loadDashboard();
+    } catch (e) {
+      emit(DashboardErrorState(message: 'Erro ao atualizar progresso'));
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/topics/cubit/topics_cubit.dart';
-import 'package:stodo/app/topics/pages/topics_detail.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/states/topics_states.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
@@ -16,8 +15,6 @@ import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 
 import '../../../core/themes/spacing.dart';
-import '../../library/repository/books_repository.dart';
-import '../cubit/topics_detail_cubit.dart';
 
 class TopicsPage extends StatefulWidget {
   const TopicsPage({super.key});
@@ -163,14 +160,10 @@ class _TopicsPageState extends State<TopicsPage> {
                       totalRead: topic.totalRead,
                       resourcesCount: topic.totalPages,
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (_) => TopicsDetailCubit(BooksRepository())..loadBooks(topic.id),
-                              child: TopicsDetailPage(topic: topic),
-                            ),
-                          ),
+                          '/topic-detail',
+                          arguments: topic,
                         );
                       },
                     );

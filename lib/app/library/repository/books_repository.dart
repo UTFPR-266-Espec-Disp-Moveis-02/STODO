@@ -175,4 +175,10 @@ class BooksRepository {
     final result = await db.rawQuery(query, args);
     return result.map((e) => BookModel.fromMap(e)).toList();
   }
+
+  // MARK: DeleteBook
+  Future<void> deleteBook(int id) async {
+    final db = await _db;
+    await db.delete('books', where: 'id = ?', whereArgs: [id]);
+  }
 }

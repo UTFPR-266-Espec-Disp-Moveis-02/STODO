@@ -8,7 +8,6 @@ import 'package:stodo/core/themes/spacing.dart';
 
 import '../../../core/components/cards/book_list_card.dart';
 import '../../../core/components/form/icon_selector.dart';
-import '../../library/pages/create_update_book_page.dart';
 import '../cubit/topics_detail_cubit.dart';
 import '../states/topics_detail_state.dart';
 
@@ -33,11 +32,10 @@ class TopicsDetailPage extends StatelessWidget {
     int? bookId,
   }) async {
     if (!context.mounted) return;
-    final result = await Navigator.push(
+    final result = await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => CreateUpdateBookPage(id: bookId, topicId: topic.id),
-      ),
+      '/create-update-book',
+      arguments: {'id': bookId, 'topicId': topic.id},
     );
 
     if (result == true && context.mounted) {
@@ -264,17 +262,48 @@ class TopicsDetailPage extends StatelessWidget {
               currentPage: book.currentPage,
               totalPages: book.totalPages,
               onTap: () async {
-                await Navigator.pushNamed(
+                final result = await Navigator.pushNamed(
                   context,
                   '/book-details',
-                  arguments: book.id,
+                  arguments: book,
                 );
                 if (!context.mounted) return;
-                context.read<TopicsDetailCubit>().loadBooks(topic.id);
+                if (result == true) {
+                  context.read<TopicsDetailCubit>().loadBooks(topic.id);
+                }
               },
               onEdit: () =>
                   _navigateToCreateUpdateBook(context, bookId: book.id),
-              onRemove: () {},
+              onRemove: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Remover Livro'),
+                    content: Text(
+                      'Deseja remover "${book.title}" deste tópico?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text(
+                          'Remover',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm == true && context.mounted) {
+                  context.read<TopicsDetailCubit>().deleteBook(
+                    book.id!,
+                    topic.id,
+                  );
+                }
+              },
             ),
           );
         }, childCount: booksList.length),

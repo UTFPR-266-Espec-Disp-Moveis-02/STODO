@@ -78,4 +78,22 @@ class TopicsCubit extends Cubit<TopicsState> {
       emit(TopicsErrorState(message: 'Erro ao salvar tópico'));
     }
   }
+
+  Future<void> updateTopic(TopicModel topic) async {
+    try {
+      await _repository.updateTopic(topic);
+      await loadTopics();
+    } catch (e) {
+      emit(TopicsErrorState(message: 'Erro ao editar tópico'));
+    }
+  }
+
+  Future<void> deleteTopic(int id) async {
+    try {
+      await _repository.deleteTopic(id);
+      await loadTopics();
+    } catch (e) {
+      emit(TopicsErrorState(message: 'Erro ao deletar tópico'));
+    }
+  }
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
-import 'package:stodo/app/library/pages/create_update_book_page.dart';
+import 'package:stodo/app/library/widgets/book_progress_modal.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/models/book_model.dart';
@@ -18,9 +18,6 @@ import '../../../core/components/states/home_empty_state_card.dart';
 import '../../../core/models/topic_progress_model.dart';
 import '../../../core/themes/colors.dart';
 import '../../../core/themes/spacing.dart';
-import '../../library/repository/books_repository.dart';
-import '../../topics/cubit/topics_detail_cubit.dart';
-import '../../topics/pages/topics_detail.dart';
 import '../widgets/dashboard_loading_view.dart';
 
 class HomeDashboardPage extends StatefulWidget {
@@ -40,10 +37,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Future<void> _navigateToCreateUpdateBook(BuildContext context) async {
     final cubit = context.read<DashboardCubit>();
 
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => CreateUpdateBookPage()),
-    );
+    final result = await Navigator.pushNamed(context, '/create-update-book');
 
     if (result == true) {
       cubit.loadDashboard();
@@ -210,14 +204,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                       totalRead: topic.totalRead,
                       resourcesCount: topic.totalPages,
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (_) => TopicsDetailCubit(BooksRepository())..loadBooks(topic.id),
-                              child: TopicsDetailPage(topic: topic),
-                            ),
-                          ),
+                          '/topic-detail',
+                          arguments: topic,
                         );
                       },
                     );
@@ -253,13 +243,27 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                       separatorBuilder: (context, index) =>
                           const SizedBox(width: AppSpacing.s16),
                       itemBuilder: (context, index) {
+                        final book = recentBooks[index];
                         return BookCard(
-                          imagePath: recentBooks[index].imagePath,
-                          title: recentBooks[index].title,
-                          progress:
-                              recentBooks[index].currentPage /
-                              recentBooks[index].totalPages,
-                          onTap: () {},
+                          imagePath: book.imagePath,
+                          title: book.title,
+                          progress: book.totalPages > 0
+                              ? book.currentPage / book.totalPages
+                              : 0.0,
+                          onTap: () {
+                            final dashboardCubit = context.read<DashboardCubit>();
+                            BookProgressModal.show(
+                              context,
+                              book,
+                              onSave: (status, currentPage) {
+                                dashboardCubit.updateBookProgress(
+                                  book.id!,
+                                  status,
+                                  currentPage,
+                                );
+                              },
+                            );
+                          },
                         );
                       },
                     ),
