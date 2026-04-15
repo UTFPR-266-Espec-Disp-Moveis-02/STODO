@@ -4,7 +4,7 @@ class AppColors {
   // Primary colors
   static const Color primary = Color(0xFF3a86ff);
   static const Color primaryDark = Color(0xFF0a0e14);
-  static const Color primaryMedium = Color(0xFF11171f);
+  static const Color primaryMedium = Color(0xFF151b24);
   static const Color primaryDarkAccent = Color(0xFF1f2937);
 
   // Neutral colors
@@ -37,6 +37,10 @@ class AppColors {
     topicColor7,
     topicColor8,
   ];
+
+  // Accent colors
+  static const Color blueAccent = Color(0xFF3a86ff);
+
 
   // Helper method to convert Color to Hex string
   static String colorToHex(Color color) {

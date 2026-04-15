@@ -121,4 +121,58 @@ class BooksRepository {
       );
     }
   }
+
+  // MARK: getBooksByTopicId
+  Future<List<BookModel>> getBooksByTopicId({
+    String? searchQuery,
+    String? status,
+    int? topicId
+  }) async {
+    final db = await _db;
+
+    String query = '''
+    SELECT
+      b.id,
+      b.title,
+      b.author,
+      b.status,
+      b.current_page,
+      b.total_pages,
+      b.updated_at,
+      b.image_path,
+      b.topic_id,
+      t.name as topic_name,
+      t.icon_id as icon_id,
+      t.color_hex as color_hex
+    FROM books b
+    LEFT JOIN topics t ON t.id = b.topic_id
+    WHERE
+  ''';
+    String defaultComparison = '(1 = 1)';
+    List<dynamic> args = [];
+
+    if (topicId != null && topicId.toString().trim().isNotEmpty) {
+      query += ' b.topic_id = ? AND ';
+      args.add(topicId);
+    }
+
+    if (status != null && status.trim().isNotEmpty) {
+      query += ' b.status = ? AND ';
+      args.add('%${status.trim()}%');
+    } else {
+      query += ' $defaultComparison AND ';
+    }
+
+    if (searchQuery != null && searchQuery.trim().isNotEmpty) {
+      query += '(b.title LIKE ? OR b.author LIKE ?) ';
+      args.add('%${searchQuery.trim()}%');
+      args.add('%${searchQuery.trim()}%');
+    } else {
+      query += '$defaultComparison ';
+    }
+    query += 'GROUP BY b.id ORDER BY b.title ASC';
+
+    final result = await db.rawQuery(query, args);
+    return result.map((e) => BookModel.fromMap(e)).toList();
+  }
 }
