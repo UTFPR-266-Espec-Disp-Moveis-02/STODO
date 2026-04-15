@@ -23,7 +23,6 @@ class BookListCardSkeleton extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// 📘 CAPA
               const Skeleton(
                 width: 56,
                 height: 76,
@@ -32,29 +31,24 @@ class BookListCardSkeleton extends StatelessWidget {
 
               const SizedBox(width: AppSpacing.s16),
 
-              /// 📄 CONTEÚDO
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.s8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      /// TÍTULO
                       Skeleton(width: double.infinity, height: 14),
 
                       SizedBox(height: AppSpacing.s4),
 
-                      /// AUTOR
                       Skeleton(width: 120, height: 12),
 
                       SizedBox(height: AppSpacing.s12),
 
-                      /// STATUS / PROGRESS
                       Skeleton(width: 100, height: 12),
 
                       SizedBox(height: AppSpacing.s4),
 
-                      /// BARRA DE PROGRESSO
                       Skeleton(
                         width: double.infinity,
                         height: 6,
@@ -65,7 +59,6 @@ class BookListCardSkeleton extends StatelessWidget {
                 ),
               ),
 
-              /// ⋮ MENU
               const Skeleton(width: 24, height: 24, shape: BoxShape.circle),
             ],
           ),
