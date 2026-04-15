@@ -16,8 +16,9 @@ import '../../../core/themes/theme_exports.dart';
 
 class CreateUpdateBookPage extends StatefulWidget {
   final int? id;
+  final int? topicId;
 
-  const CreateUpdateBookPage({super.key, this.id});
+  const CreateUpdateBookPage({super.key, this.id, this.topicId});
 
   @override
   State<CreateUpdateBookPage> createState() => _CreateUpdateBookPageState();
@@ -38,7 +39,7 @@ class _CreateUpdateBookPageState extends State<CreateUpdateBookPage> {
         BooksRepository(),
         TopicsRepository(),
         id: widget.id
-      )..loadInitialData(id: widget.id),
+      )..loadInitialData(id: widget.id, topicId: widget.topicId),
       child: Builder(
         builder: (context) {
           return BlocListener<BooksCubit, BooksState>(

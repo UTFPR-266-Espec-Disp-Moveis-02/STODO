@@ -12,19 +12,33 @@ class BooksCubit extends Cubit<BooksState> {
   final BooksRepository _booksRepository;
   final TopicsRepository _topicsRepository;
 
-  BooksCubit(this._booksRepository, this._topicsRepository, {int? id})
+  BooksCubit(this._booksRepository, this._topicsRepository, {int? id, int? topicId})
     : super(BooksState(status: Initial()));
-
-  Future<void> loadInitialData({int? id}) async {
+  Future<void> loadInitialData({int? id, int? topicId}) async {
     emit(state.copyWith(status: Loading()));
 
     try {
       final statusList = BookStatus.values;
       final topicsList = await _topicsRepository.getTopicsDropdown();
       BookModel? book;
+      TopicModel? topicToSelect;
 
       if (id != null) {
         book = await _booksRepository.getBookById(id);
+
+        if (book?.topic != null) {
+          try {
+            topicToSelect = topicsList.firstWhere((t) => t.id == book!.topic!.id);
+          } catch (_) {
+            topicToSelect = book?.topic;
+          }
+        }
+      }
+      else if (topicId != null) {
+        try {
+          topicToSelect = topicsList.firstWhere((t) => t.id == topicId);
+        } catch (_) {
+        }
       }
 
       emit(
@@ -34,13 +48,13 @@ class BooksCubit extends Cubit<BooksState> {
           topicOptions: topicsList,
           book: book,
           selectedStatus: book?.status ?? BookStatus.wantToRead,
-          selectedTopic: book?.topic,
+          selectedTopic: topicToSelect,
           imagePath: book?.imagePath,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Error(message: 'Erro ao carregar dados')
+          status: Error(message: 'Erro ao carregar dados')
       ));
     }
   }

@@ -23,7 +23,7 @@ class TopicsCubit extends Cubit<TopicsState> {
 
       emit(
         TopicsSuccessState(
-          topicsProgress: topics
+            topicsProgress: topics
         ),
       );
     } catch (e) {
