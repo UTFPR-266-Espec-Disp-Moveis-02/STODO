@@ -201,9 +201,9 @@ class _TopicsPageState extends State<TopicsPage> {
                             ],
                           ),
                         );
-                        if (confirm == true ) {
+                        if (confirm == true) {
                           cubit.deleteTopic(topic.id);
-                          context.read<DashboardCubit>().loadDashboard();
+                          dashCubit.loadDashboard();
                         }
                       },
                     );
