@@ -1,4 +1,4 @@
-import 'package:stodo/core/models/book_status.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 
 sealed class BookProgressState {}
 

@@ -6,8 +6,8 @@ import 'package:stodo/core/components/bottom_sheet/app_bottom_sheet.dart';
 import 'package:stodo/core/components/buttons/primary_button.dart';
 import 'package:stodo/core/components/form/custom_dropdown.dart';
 import 'package:stodo/core/components/form/progress_updater.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/models/book_model.dart';
-import 'package:stodo/core/models/book_status.dart';
 import 'package:stodo/core/themes/colors.dart';
 import 'package:stodo/core/themes/spacing.dart';
 
@@ -61,7 +61,7 @@ class _BookProgressContent extends StatelessWidget {
             builder: (context, state) {
               final currentStatus = state is BookProgressIdle
                   ? state.status
-                  : BookStatus.fromDbString(book.status);
+                  : book.status;
 
               return CustomDropdown<BookStatus>(
                 label: 'Status da leitura',

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/library/states/book_progress_states.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/models/book_model.dart';
-import 'package:stodo/core/models/book_status.dart';
 
 class BookProgressCubit extends Cubit<BookProgressState> {
   final BookModel book;
@@ -9,7 +9,7 @@ class BookProgressCubit extends Cubit<BookProgressState> {
   BookProgressCubit(this.book)
       : super(
           BookProgressIdle(
-            status: BookStatus.fromDbString(book.status),
+            status: book.status,
             currentPage: book.currentPage,
           ),
         );

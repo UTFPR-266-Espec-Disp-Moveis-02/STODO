@@ -21,10 +21,10 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final TextAlign textAlign;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
-  final List<TextInputFormatter>? inputFormatters;
   final double borderRadius;
 
   const CustomTextField({
@@ -40,10 +40,10 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
+    this.inputFormatters,
     this.textAlign = TextAlign.start,
     this.onChanged,
     this.onFieldSubmitted,
-    this.inputFormatters,
     this.borderRadius = 12,
   });
 

@@ -23,7 +23,10 @@ class _BasePageState extends State<BasePage> {
 
   // Lista de páginas mapeadas para os itens do BottomNavigationBar
   List<Widget> get _pages => [
-    HomeDashboardPage(onNavigateToTopics: () => _onTabTapped(1)),
+    HomeDashboardPage(
+      onNavigateToTopics: () => _onTabTapped(1),
+      onNavigateToLibrary: () => _onTabTapped(2),
+    ),
     TopicsPage(),
     LibraryPage(),
     const DesignSystemPage(),

@@ -73,10 +73,11 @@ CREATE TABLE books (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   author TEXT,
-  total_pages INTEGER,
-  current_page INTEGER DEFAULT 0,
   status TEXT, -- Lendo, Lido, Relendo, Quero Ler, Abandonei
-  cover_path TEXT,
+  current_page INTEGER DEFAULT 0,
+  total_pages INTEGER,
+  updated_at TEXT,
+  image_path TEXT,
   topic_id INTEGER NULL, -- Relacionamento Opcional
   FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE SET NULL
 );

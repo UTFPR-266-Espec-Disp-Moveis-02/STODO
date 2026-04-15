@@ -25,12 +25,19 @@ class LibraryRepository {
       args.add(status);
     }
 
-    final result = await db.query(
-      'books',
-      where: where.isNotEmpty ? where.join(' AND ') : null,
-      whereArgs: args,
-      orderBy: 'updated_at DESC',
-    );
+    final whereClause = where.isNotEmpty ? 'WHERE ${where.join(' AND ')}' : '';
+    final result = await db.rawQuery('''
+      SELECT 
+        b.*, 
+        t.id AS topic_id,
+        t.name AS topic_name,
+        t.icon_id,
+        t.color_hex
+      FROM books b
+      LEFT JOIN topics t ON t.id = b.topic_id
+      $whereClause
+      ORDER BY b.updated_at DESC
+    ''', args);
 
     return result.map((e) => BookModel.fromMap(e)).toList();
   }

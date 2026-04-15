@@ -19,4 +19,12 @@ class TopicModel {
       colorHex: map['color_hex'],
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is TopicModel && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

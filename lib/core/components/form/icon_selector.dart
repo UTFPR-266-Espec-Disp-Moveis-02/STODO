@@ -11,6 +11,7 @@ enum TopicIcon {
   compass(Icons.architecture),
   brain(Icons.psychology),
   palette(Icons.palette),
+  smartphone(Icons.smartphone),
   terminal(Icons.terminal);
 
   final IconData iconData;

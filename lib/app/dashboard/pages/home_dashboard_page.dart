@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
+import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/models/book_model.dart';
@@ -21,13 +22,33 @@ import '../widgets/dashboard_loading_view.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   final VoidCallback onNavigateToTopics;
-  const HomeDashboardPage({super.key, required this.onNavigateToTopics});
+  final VoidCallback onNavigateToLibrary;
+  const HomeDashboardPage({
+    super.key,
+    required this.onNavigateToTopics,
+    required this.onNavigateToLibrary
+  });
 
   @override
   State<HomeDashboardPage> createState() => _HomeDashboardPageState();
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  Future<void> _navigateToCreateUpdateBook(BuildContext context) async {
+    final cubit = context.read<DashboardCubit>();
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CreateUpdateBookPage(),
+      ),
+    );
+
+    if (result == true) {
+      cubit.loadDashboard();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -95,7 +116,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        recentBookSection(state.recentBooks),
+                        recentBookSection(context, state.recentBooks),
                         const SizedBox(height: AppSpacing.s16),
                         topicProgressSection(state.topicProgress),
                       ],
@@ -120,7 +141,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         subtitle:
             'Cadastre seu primeiro livro ou crie um tópico\npara organizar seus materiais.',
         primaryButtonText: 'Cadastrar Livro',
-        onPrimaryPressed: () {},
+        onPrimaryPressed: () => _navigateToCreateUpdateBook(context),
         outlineButtonText: 'Criar Tópico',
         onOutlinePressed: () {
           final dashboardCubit = context.read<DashboardCubit>();
@@ -170,16 +191,16 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     );
   }
 
-  Widget recentBookSection(List<BookModel> recentBooks) {
+  Widget recentBookSection(BuildContext context, List<BookModel> recentBooks) {
     return Column(
       children: [
-        sectionTitle('Lendo agora', () {}, recentBooks.isEmpty),
+        sectionTitle('Lendo agora', widget.onNavigateToLibrary, recentBooks.isEmpty),
         recentBooks.isEmpty
             ? HomeEmptyStateCard(
                 icon: Icons.menu_book,
                 title: 'Nenhum livro sendo lido agora',
                 buttonText: 'Adicionar Livro',
-                onPressed: () {},
+                onPressed: () => _navigateToCreateUpdateBook(context),
               )
             : Column(
                 children: [

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import '../repository/library_repository.dart';
 import '../states/library_states.dart';
 
@@ -17,8 +18,8 @@ class LibraryCubit extends Cubit<LibraryStates> {
     await fetchBooks();
   }
 
-  void changeStatus(String? status) {
-    _status = status;
+  void changeStatus(BookStatus? status) {
+    _status = status?.name;
     fetchBooks();
   }
 

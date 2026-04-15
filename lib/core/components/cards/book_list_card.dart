@@ -1,4 +1,4 @@
-import 'package:stodo/core/models/book_status.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/themes/theme_exports.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -11,6 +11,9 @@ class BookListCard extends StatelessWidget {
 
   /// Pode ser a data lida ("Maio, 2023"), o capítulo atual ("Capítulo 12") ou nulo
   final String? extraInfo;
+
+  final int currentPage;
+  final int totalPages;
 
   /// Progresso de 0.0 a 1.0 (Usado apenas se status for Lendo)
   final double? progress;
@@ -26,11 +29,14 @@ class BookListCard extends StatelessWidget {
     required this.author,
     required this.status,
     this.extraInfo,
-    this.progress,
+    required this.currentPage,
+    required this.totalPages,
     this.onTap,
     this.onRemove,
     this.onEdit,
-  });
+  }) : progress = (status == BookStatus.reading) ? (
+      (totalPages > 0) ? (currentPage / totalPages) : 0.0
+    ) : null;
 
   @override
   Widget build(BuildContext context) {

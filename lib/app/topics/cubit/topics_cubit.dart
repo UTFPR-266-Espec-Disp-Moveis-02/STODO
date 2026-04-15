@@ -31,11 +31,30 @@ class TopicsCubit extends Cubit<TopicsState> {
     }
   }
 
+  void cleanSearchQuery() {
+    final current = state;
+
+    if (current is TopicsSuccessState) {
+      emit(TopicsSuccessState(
+        topicsProgress: current.topicsProgress,
+        searchQuery: '',
+      ));
+    }
+  }
+
   void onSearchChanged(String query) {
     _debounce?.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      loadTopics(searchQuery: query);
+      //loadTopics(searchQuery: query);
+      final current = state;
+
+      if (current is TopicsSuccessState) {
+        emit(TopicsSuccessState(
+          topicsProgress: current.topicsProgress,
+          searchQuery: query,
+        ));
+      }
     });
   }
 

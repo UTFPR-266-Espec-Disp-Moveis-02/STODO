@@ -6,11 +6,12 @@ import 'package:stodo/core/models/topic_progress_model.dart';
 class TopicsRepository {
   final Future<Database> _db = AppDatabase.instance;
 
+  // MARK: GetTopicsProgress
   Future<List<TopicProgressModel>> getTopicsProgress({String? searchQuery}) async {
     final db = await _db;
 
     String query = '''
-      SELECT 
+      SELECT
         t.id, t.name, t.icon_id, t.color_hex,
         COALESCE(SUM(b.current_page), 0) as total_read,
         COALESCE(SUM(b.total_pages), 0) as total_pages
@@ -29,6 +30,7 @@ class TopicsRepository {
     return result.map((e) => TopicProgressModel.fromMap(e)).toList();
   }
 
+  // MARK: CreateTopic
   Future<int> createTopic(TopicModel topic) async {
     final db = await _db;
 
@@ -39,7 +41,25 @@ class TopicsRepository {
         'icon_id': topic.iconId,
         'color_hex': topic.colorHex,
       },
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.rollback,
     );
+  }
+
+  // MARK: GetTopicsDropdown
+  Future<List<TopicModel>> getTopicsDropdown() async {
+    final db = await _db;
+
+    String query = '''
+      SELECT
+        t.id,
+        t.name,
+        t.icon_id,
+        t.color_hex
+      FROM topics t
+    ''';
+
+    List<dynamic> args = [];
+    final result = await db.rawQuery(query, args);
+    return result.map((e) => TopicModel.fromMap(e)).toList();
   }
 }

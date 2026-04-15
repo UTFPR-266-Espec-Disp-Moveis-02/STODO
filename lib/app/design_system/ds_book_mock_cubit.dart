@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/core/enums/book_status_enum.dart';
 import 'package:stodo/core/models/book_model.dart';
-import 'package:stodo/core/models/book_status.dart';
 
 class DsBookMockCubit extends Cubit<BookModel> {
   DsBookMockCubit(super.initialBook);
@@ -10,13 +10,13 @@ class DsBookMockCubit extends Cubit<BookModel> {
       BookModel(
         id: state.id,
         title: state.title,
-        status: status.toDbString(),
+        author: state.author,
+        statusStr: status.toDbString(),
         currentPage: currentPage,
         totalPages: state.totalPages,
-        topicId: state.topicId,
+        topic: state.topic,
         updatedAt: DateTime.now().toIso8601String(),
         imagePath: state.imagePath,
-        author: state.author,
       ),
     );
   }

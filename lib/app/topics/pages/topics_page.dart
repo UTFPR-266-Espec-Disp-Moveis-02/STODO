@@ -12,9 +12,7 @@ import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/components/states/skeletons/topic_card_skeleton.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
-import 'package:stodo/core/themes/colors.dart';
-
-import '../../../core/themes/spacing.dart';
+import '../../../core/themes/theme_exports.dart';
 
 class TopicsPage extends StatefulWidget {
   const TopicsPage({super.key});
@@ -24,6 +22,7 @@ class TopicsPage extends StatefulWidget {
 }
 
 class _TopicsPageState extends State<TopicsPage> {
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class _TopicsPageState extends State<TopicsPage> {
                     size: AppSpacing.s24
                   ),
                   onPressed: () {
-                    final topicCubit = context.read<TopicsCubit>(); 
+                    final topicCubit = context.read<TopicsCubit>();
                     CreateTopicBottomSheet.show(
                       context,
                       onTopicCreate: (topic) => topicCubit.addTopic(topic),
@@ -61,16 +60,30 @@ class _TopicsPageState extends State<TopicsPage> {
             ),
             body: BlocBuilder<TopicsCubit, TopicsState>(
               builder: (context, state) {
+                // MARK: Loading
                 if (state is TopicsLoadingState) {
                   return topicsLoadingView();
                 }
-
+                // MARK: Error
                 if (state is TopicsErrorState) {
                   return Center(child: Text(state.message));
                 }
-
+                // MARK: Success
                 if (state is TopicsSuccessState) {
-                  if (state.topicsProgress.isEmpty) {
+                  final isSearching = state.searchQuery.isNotEmpty;
+
+                  final filteredList = isSearching
+                    ? state.topicsProgress
+                      .where((t) => t.name
+                        .toLowerCase()
+                        .contains(state.searchQuery.toLowerCase()))
+                      .toList()
+                    : state.topicsProgress;
+
+                  final isEmpty = filteredList.isEmpty;
+
+                  // MARK: Empty state sem busca
+                  if (isEmpty && !isSearching) {
                     return HomeEmptyStateCard(
                       icon: Icons.menu_book,
                       title: 'Você ainda não criou tópicos',
@@ -85,29 +98,44 @@ class _TopicsPageState extends State<TopicsPage> {
                         );
                       },
                     );
-                  } else {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextField(
-                              hint: 'Pesquisar Tópicos',
-                              prefixIcon: Icon(Icons.search),
-                              onChanged: (value) {
-                                context.read<TopicsCubit>().onSearchChanged(value);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.s16),
-                            topicProgressSection(state.topicsProgress),
-                          ],
-                        ),
-                      ),
-                    );
                   }
-                }
 
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.s16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextField(
+                            controller: _searchController,
+                            hint: 'Pesquisar Tópicos',
+                            prefixIcon: Icon(Icons.search),
+                            onChanged: (value) {
+                              context.read<TopicsCubit>().onSearchChanged(value);
+                            },
+                          ),
+                          const SizedBox(height: AppSpacing.s16),
+                          if (isEmpty && isSearching)
+                            // MARK: Empty state para busca sem resultados
+                            HomeEmptyStateCard(
+                              icon: Icons.search_off,
+                              title: 'Nenhum resultado encontrado',
+                              subtitle: 'Nenhum resultado para "${state.searchQuery}"',
+                              buttonText: 'Limpar busca',
+                              buttonIcon: Icons.clear,
+                              onPressed: () {
+                                _searchController.clear();
+                                context.read<TopicsCubit>().cleanSearchQuery();
+                              },
+                            )
+                          else
+                            // MARK: Lista de tópicos
+                            topicProgressSection(filteredList),
+                        ],
+                      ),
+                    ),
+                  );
+                }
                 return const SizedBox.shrink();
               },
             ),
@@ -121,47 +149,27 @@ class _TopicsPageState extends State<TopicsPage> {
     return Column(
       children: [
         topicProgress.isEmpty
-            ? Text('Empty')
-            : Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.s12),
-                child: AnimatedGridView(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.0,
-                  children: topicProgress.map((topic) {
-                    return TopicCard.fromHex(
-                      icon: TopicIcon.fromDbString(topic.iconId).iconData,
-                      colorStr: topic.colorHex,
-                      title: topic.name,
-                      totalRead: topic.totalRead,
-                      resourcesCount: topic.totalPages,
-                      onTap: () {},
-                    );
-                  }).toList(),
-                ),
-              ),
-      ],
-    );
-  }
-
-  Widget sectionTitle(String label, Function()? onPressed, bool emptyState) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.light,
+          ? Text('Empty')
+          : Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.s12),
+            child: AnimatedGridView(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.0,
+              children: topicProgress.map((topic) {
+                return TopicCard.fromHex(
+                  icon: TopicIcon.fromDbString(topic.iconId).iconData,
+                  colorStr: topic.colorHex,
+                  title: topic.name,
+                  totalRead: topic.totalRead,
+                  resourcesCount: topic.totalPages,
+                  onTap: () {},
+                );
+              }).toList(),
             ),
           ),
-          if (!emptyState)
-            TextButton(onPressed: onPressed, child: const Text('Ver Todos')),
-        ],
-      ),
+      ],
     );
   }
 

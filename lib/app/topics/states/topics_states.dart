@@ -14,8 +14,10 @@ class TopicsErrorState extends TopicsState {
 
 class TopicsSuccessState extends TopicsState {
   final List<TopicProgressModel> topicsProgress;
+  final String searchQuery;
 
   TopicsSuccessState({
-    required this.topicsProgress
+    required this.topicsProgress,
+    this.searchQuery = ''
   });
 }
