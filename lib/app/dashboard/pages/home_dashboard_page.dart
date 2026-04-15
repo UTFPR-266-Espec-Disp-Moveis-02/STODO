@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
-import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/dashboard/states/dashboard_states.dart';
 import 'package:stodo/app/library/widgets/book_progress_modal.dart';
-import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/models/book_model.dart';
 
@@ -46,13 +44,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          DashboardCubit(DashboardRepository(), TopicsRepository())
-            ..loadDashboard(),
-      child: Scaffold(
-        backgroundColor: AppColors.primaryDark,
-        appBar: AppBar(
+    return Scaffold(
+      backgroundColor: AppColors.primaryDark,
+      appBar: AppBar(
           centerTitle: false,
           title: AppLogoHorizontal(height: 42, width: 145),
           actions: [
@@ -97,7 +91,6 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
             );
           },
         ),
-      ),
     );
   }
 

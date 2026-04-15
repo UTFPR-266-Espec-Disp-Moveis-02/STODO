@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
+import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/library/pages/book_details_page.dart';
 import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/library/repository/books_repository.dart';
 import 'package:stodo/app/topics/cubit/topics_detail_cubit.dart';
 import 'package:stodo/app/topics/pages/topics_detail.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/core/db/app_database.dart';
 import 'package:stodo/core/models/book_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
@@ -24,13 +27,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'STodo',
-      theme: AppDarkTheme.darkTheme,
-      darkTheme: AppDarkTheme.darkTheme,
-      themeMode: ThemeMode.dark,
-      home: const BasePage(),
-      onGenerateRoute: (settings) {
+    return BlocProvider(
+      create: (_) => DashboardCubit(DashboardRepository(), TopicsRepository())
+        ..loadDashboard(),
+      child: MaterialApp(
+        title: 'STodo',
+        theme: AppDarkTheme.darkTheme,
+        darkTheme: AppDarkTheme.darkTheme,
+        themeMode: ThemeMode.dark,
+        home: const BasePage(),
+        onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/book-details':
             final book = settings.arguments as BookModel;
@@ -61,6 +67,7 @@ class MyApp extends StatelessWidget {
             return null;
         }
       },
+    ),
     );
   }
 }
