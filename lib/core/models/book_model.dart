@@ -12,7 +12,6 @@ class BookModel {
   final String updatedAt;
   final String? imagePath;
   final TopicModel? topic;
-  //final int? topicId;
 
   BookModel({
     required this.id,
@@ -24,7 +23,6 @@ class BookModel {
     required this.updatedAt,
     this.imagePath,
     this.topic,
-    //this.topicId,
   }) : status = BookStatus.fromDbString(statusStr);
 
   factory BookModel.fromMap(Map<String, dynamic> map) {
@@ -37,7 +35,6 @@ class BookModel {
       totalPages: map['total_pages'],
       updatedAt: map['updated_at'],
       imagePath: map['image_path'],
-      //topicId: map['topic_id'],
       topic: map['topic_id'] != null
         ? TopicModel.fromMap({
           'id': map['topic_id'],

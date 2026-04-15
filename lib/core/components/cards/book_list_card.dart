@@ -42,146 +42,149 @@ class BookListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isReading = status == BookStatus.reading;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.primaryMedium,
-        borderRadius: BorderRadius.circular(AppSpacing.s16),
-        border: Border.all(color: AppColors.primaryDarkAccent, width: 1),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          // Indicador lateral azul se estiver "Lendo"
-          if (isReading)
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 4,
-              child: Container(color: AppColors.primary),
-            ),
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSpacing.s16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.primaryMedium,
+          borderRadius: BorderRadius.circular(AppSpacing.s16),
+          border: Border.all(color: AppColors.primaryDarkAccent, width: 1),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            // Indicador lateral azul se estiver "Lendo"
+            if (isReading)
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: 4,
+                child: Container(color: AppColors.primary),
+              ),
 
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.s12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Capa
-                    Container(
-                      width: 56,
-                      height: 76,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryMedium,
-                        borderRadius: BorderRadius.circular(AppSpacing.s8),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: _buildImage(),
-                    ),
-                    const SizedBox(width: AppSpacing.s16),
-
-                    // Detalhes do Livro
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.s8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              title,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.light,
-                                  ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: AppSpacing.s2),
-                            Text(
-                              author,
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(color: AppColors.gray200),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: AppSpacing.s8),
-                            _buildStatusRow(context),
-                          ],
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.s12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Capa
+                      Container(
+                        width: 56,
+                        height: 76,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryMedium,
+                          borderRadius: BorderRadius.circular(AppSpacing.s8),
                         ),
+                        clipBehavior: Clip.antiAlias,
+                        child: _buildImage(),
                       ),
-                    ),
+                      const SizedBox(width: AppSpacing.s16),
 
-                    // Popup Menu (3 pontinhos)
-                    PopupMenuButton<int>(
-                      icon: const Icon(
-                        Icons.more_vert,
-                        color: AppColors.gray200,
-                      ),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 0:
-                            if (onEdit != null) {
-                              onEdit!();
-                            }
-                            break;
-                          case 1:
-                            if (onRemove != null) {
-                              onRemove!();
-                            }
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        //EDIT
-                        PopupMenuItem(
-                          value: 0,
-                          child: Row(
+                      // Detalhes do Livro
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.s8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.edit_outlined,
-                                color: AppColors.topicColor1,
-                                size: 20,
-                              ),
-                              const SizedBox(width: AppSpacing.s8),
                               Text(
-                                'Editar',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: AppColors.topicColor1),
+                                title,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.light,
+                                    ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
+                              const SizedBox(height: AppSpacing.s2),
+                              Text(
+                                author,
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: AppColors.gray200),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: AppSpacing.s8),
+                              _buildStatusRow(context),
                             ],
                           ),
                         ),
-                        PopupMenuItem(
-                          value: 1,
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.delete_outline,
-                                color: AppColors.topicColor2,
-                                size: 20,
-                              ),
-                              const SizedBox(width: AppSpacing.s8),
-                              Text(
-                                'Remover',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: AppColors.topicColor2),
-                              ),
-                            ],
-                          ),
+                      ),
+
+                      // Popup Menu (3 pontinhos)
+                      PopupMenuButton<int>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: AppColors.gray200,
                         ),
-                      ],
-                    ),
-                  ],
+                        onSelected: (value) {
+                          switch (value) {
+                            case 0:
+                              if (onEdit != null) {
+                                onEdit!();
+                              }
+                              break;
+                            case 1:
+                              if (onRemove != null) {
+                                onRemove!();
+                              }
+                              break;
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          //EDIT
+                          PopupMenuItem(
+                            value: 0,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.edit_outlined,
+                                  color: AppColors.topicColor1,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: AppSpacing.s8),
+                                Text(
+                                  'Editar',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: AppColors.topicColor1),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 1,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.delete_outline,
+                                  color: AppColors.topicColor2,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: AppSpacing.s8),
+                                Text(
+                                  'Remover',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: AppColors.topicColor2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

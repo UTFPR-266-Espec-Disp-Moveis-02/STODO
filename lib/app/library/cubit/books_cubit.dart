@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/library/repository/books_repository.dart';
 import 'package:stodo/app/library/states/books_states.dart';
@@ -10,7 +9,6 @@ import 'package:stodo/core/models/book_model.dart';
 import 'package:stodo/core/models/topic_model.dart';
 
 class BooksCubit extends Cubit<BooksState> {
-  Timer? _debounce;
   final BooksRepository _booksRepository;
   final TopicsRepository _topicsRepository;
 
@@ -64,8 +62,6 @@ class BooksCubit extends Cubit<BooksState> {
     required String author,
     required int numberOfPages
   }) async {
-    //emit(state.copyWith(status: Loading()));
-
     try {
       final book = BookModel(
         id: state.book?.id,
@@ -84,31 +80,5 @@ class BooksCubit extends Cubit<BooksState> {
     } catch (e) {
       emit(state.copyWith(status: Error(message: 'Erro ao salvar')));
     }
-  }
-
-  Future<void> loadBooks({String? searchQuery}) async {
-    if(searchQuery != null && searchQuery.isNotEmpty) {
-      emit(state.copyWith(status: Loading()));
-    }
-
-    try {
-      final results = await Future.wait([
-        _booksRepository.getBooks(searchQuery: searchQuery)
-      ]);
-
-      final books = results[0];
-
-      emit(state.copyWith(status: LoadSuccess(), booksList: books));
-    } catch (e) {
-      emit(state.copyWith(status: Error(message: 'Erro ao carregar dados')));
-    }
-  }
-
-  void onSearchChanged(String query) {
-    _debounce?.cancel();
-
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      loadBooks(searchQuery: query);
-    });
   }
 }

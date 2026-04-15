@@ -22,7 +22,12 @@ import '../widgets/dashboard_loading_view.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   final VoidCallback onNavigateToTopics;
-  const HomeDashboardPage({super.key, required this.onNavigateToTopics});
+  final VoidCallback onNavigateToLibrary;
+  const HomeDashboardPage({
+    super.key,
+    required this.onNavigateToTopics,
+    required this.onNavigateToLibrary
+  });
 
   @override
   State<HomeDashboardPage> createState() => _HomeDashboardPageState();
@@ -111,7 +116,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        recentBookSection(state.recentBooks),
+                        recentBookSection(context, state.recentBooks),
                         const SizedBox(height: AppSpacing.s16),
                         topicProgressSection(state.topicProgress),
                       ],
@@ -186,10 +191,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     );
   }
 
-  Widget recentBookSection(List<BookModel> recentBooks) {
+  Widget recentBookSection(BuildContext context, List<BookModel> recentBooks) {
     return Column(
       children: [
-        sectionTitle('Lendo agora', () {}, recentBooks.isEmpty),
+        sectionTitle('Lendo agora', widget.onNavigateToLibrary, recentBooks.isEmpty),
         recentBooks.isEmpty
             ? HomeEmptyStateCard(
                 icon: Icons.menu_book,

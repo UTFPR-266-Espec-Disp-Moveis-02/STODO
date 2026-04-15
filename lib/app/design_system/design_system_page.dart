@@ -378,8 +378,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       iconId: TopicIcon.math.toDbString(),
                       colorHex: AppColors.colorToHex(AppColors.topicColor1),
                     ),
-                    //topicId: 1,
-                    updatedAt: '',
+                    updatedAt: ''
                   ),
                   BookModel(
                     id: 2,
@@ -394,8 +393,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       iconId: TopicIcon.smartphone.toDbString(),
                       colorHex: AppColors.colorToHex(AppColors.topicColor7),
                     ),
-                    //topicId: 1,
-                    updatedAt: '',
+                    updatedAt: ''
                   ),
                   BookModel(
                     id: 3,
@@ -410,8 +408,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       iconId: TopicIcon.brain.toDbString(),
                       colorHex: AppColors.colorToHex(AppColors.topicColor3),
                     ),
-                    //topicId: 1,
-                    updatedAt: '',
+                    updatedAt: ''
                   ),
                   BookModel(
                     id: 4,
@@ -426,8 +423,7 @@ class _DesignSystemPageState extends State<DesignSystemPage> {
                       iconId: TopicIcon.book.toDbString(),
                       colorHex: AppColors.colorToHex(AppColors.topicColor4),
                     ),
-                    //topicId: 1,
-                    updatedAt: '',
+                    updatedAt: ''
                   ),
                 ].map((mockBook) {
                   return Padding(

@@ -25,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final TextAlign textAlign;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
+  final double borderRadius;
 
   const CustomTextField({
     super.key,
@@ -43,6 +44,7 @@ class CustomTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.onChanged,
     this.onFieldSubmitted,
+    this.borderRadius = 12,
   });
 
   @override
@@ -50,12 +52,12 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if(label != null) ...[
+        if (label != null) ...[
           Text(
             label!,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.gray200,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(color: AppColors.gray200),
           ),
           const SizedBox(height: AppSpacing.s8),
         ],
@@ -83,6 +85,15 @@ class CustomTextField extends StatelessWidget {
             hintText: hint ?? 'Ex: $label',
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
             hintStyle: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppColors.gray300),
