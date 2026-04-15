@@ -11,6 +11,7 @@ import 'package:stodo/core/components/layout/animated_grid_view.dart';
 import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/components/states/skeletons/topic_card_skeleton.dart';
+import 'package:stodo/core/models/topic_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 
@@ -165,6 +166,48 @@ class _TopicsPageState extends State<TopicsPage> {
                           '/topic-detail',
                           arguments: topic,
                         );
+                      },
+                      onEdit: () {
+                        CreateTopicBottomSheet.show(
+                          context,
+                          existingTopic: TopicModel(
+                            id: topic.id,
+                            name: topic.name,
+                            iconId: topic.iconId,
+                            colorHex: topic.colorHex,
+                          ),
+                          onTopicCreate: (updated) {
+                            context.read<TopicsCubit>().updateTopic(updated);
+                          },
+                        );
+                      },
+                      onDelete: () async {
+                        final cubit = context.read<TopicsCubit>();
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Deletar Tópico'),
+                            content: Text(
+                              'Deseja deletar "${topic.name}"? Os livros associados não serão removidos.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text(
+                                  'Deletar',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          cubit.deleteTopic(topic.id);
+                        }
                       },
                     );
                   }).toList(),

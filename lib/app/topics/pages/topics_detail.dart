@@ -275,6 +275,7 @@ class TopicsDetailPage extends StatelessWidget {
               onEdit: () =>
                   _navigateToCreateUpdateBook(context, bookId: book.id),
               onRemove: () async {
+                final cubit = context.read<TopicsDetailCubit>();
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -297,11 +298,8 @@ class TopicsDetailPage extends StatelessWidget {
                     ],
                   ),
                 );
-                if (confirm == true && context.mounted) {
-                  context.read<TopicsDetailCubit>().deleteBook(
-                    book.id!,
-                    topic.id,
-                  );
+                if (confirm == true) {
+                  cubit.deleteBook(book.id!, topic.id);
                 }
               },
             ),

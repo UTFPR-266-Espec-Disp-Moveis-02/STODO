@@ -11,17 +11,26 @@ import '../../../core/themes/spacing.dart';
 
 class CreateTopicBottomSheet extends StatefulWidget {
   final Function(TopicModel) onTopicCreate;
+  final TopicModel? existingTopic;
 
-  const CreateTopicBottomSheet({super.key, required this.onTopicCreate});
+  const CreateTopicBottomSheet({
+    super.key,
+    required this.onTopicCreate,
+    this.existingTopic,
+  });
 
   static Future<void> show(
     BuildContext context, {
     required Function(TopicModel) onTopicCreate,
+    TopicModel? existingTopic,
   }) {
     return AppBottomSheet.show(
       context,
-      title: 'Criar Novo Tópico',
-      builder: (_) => CreateTopicBottomSheet(onTopicCreate: onTopicCreate),
+      title: existingTopic != null ? 'Editar Tópico' : 'Criar Novo Tópico',
+      builder: (_) => CreateTopicBottomSheet(
+        onTopicCreate: onTopicCreate,
+        existingTopic: existingTopic,
+      ),
     );
   }
 
@@ -30,13 +39,24 @@ class CreateTopicBottomSheet extends StatefulWidget {
 }
 
 class _CreateTopicBottomSheetState extends State<CreateTopicBottomSheet> {
-  final _nameController = TextEditingController();
-  String? selectedColorHex = AppColors.colorToHex(AppColors.topicColor1);
-  TopicIcon? selectedIcon = TopicIcon.math;
+  late final TextEditingController _nameController;
+  late String? selectedColorHex;
+  late TopicIcon? selectedIcon;
 
   bool isLoading = false;
   String? error;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existingTopic;
+    _nameController = TextEditingController(text: existing?.name ?? '');
+    selectedColorHex = existing?.colorHex ?? AppColors.colorToHex(AppColors.topicColor1);
+    selectedIcon = existing != null
+        ? TopicIcon.fromDbString(existing.iconId)
+        : TopicIcon.math;
+  }
 
   Future<void> _submit() async {
     setState(() {
@@ -46,7 +66,7 @@ class _CreateTopicBottomSheetState extends State<CreateTopicBottomSheet> {
 
     try {
       final topic = TopicModel(
-        id: null,
+        id: widget.existingTopic?.id,
         name: _nameController.text,
         iconId: selectedIcon?.toDbString() ?? TopicIcon.math.toDbString(),
         colorHex:
@@ -103,7 +123,7 @@ class _CreateTopicBottomSheetState extends State<CreateTopicBottomSheet> {
             children: [
               Expanded(
                 child: PrimaryButton(
-                  text: 'Criar Tópico',
+                  text: widget.existingTopic != null ? 'Salvar' : 'Criar Tópico',
                   isLoading: isLoading,
                   onPressed: () {
                     if (!isLoading && _formKey.currentState!.validate()) {

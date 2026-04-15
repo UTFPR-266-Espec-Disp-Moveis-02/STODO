@@ -162,8 +162,35 @@ class _LibraryPageState extends State<LibraryPage>
                                     context,
                                     book.id,
                                   ),
-                                  onRemove: () {
-                                    context.read<LibraryCubit>().deleteBook(book.id!);
+                                  onRemove: () async {
+                                    final cubit = context.read<LibraryCubit>();
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Remover Livro'),
+                                        content: Text(
+                                          'Deseja remover "${book.title}"?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, false),
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, true),
+                                            child: const Text(
+                                              'Remover',
+                                              style: TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirm == true) {
+                                      cubit.deleteBook(book.id!);
+                                    }
                                   },
                                 );
                               },
