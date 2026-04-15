@@ -45,6 +45,27 @@ class TopicsRepository {
     );
   }
 
+  // MARK: UpdateTopic
+  Future<void> updateTopic(TopicModel topic) async {
+    final db = await _db;
+    await db.update(
+      'topics',
+      {
+        'name': topic.name,
+        'icon_id': topic.iconId,
+        'color_hex': topic.colorHex,
+      },
+      where: 'id = ?',
+      whereArgs: [topic.id],
+    );
+  }
+
+  // MARK: DeleteTopic
+  Future<void> deleteTopic(int id) async {
+    final db = await _db;
+    await db.delete('topics', where: 'id = ?', whereArgs: [id]);
+  }
+
   // MARK: GetTopicsDropdown
   Future<List<TopicModel>> getTopicsDropdown() async {
     final db = await _db;

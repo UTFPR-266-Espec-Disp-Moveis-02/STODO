@@ -16,4 +16,13 @@ class TopicsDetailCubit extends Cubit<TopicsDetailState> {
       emit(TopicsDetailError(message: 'Erro ao carregar livros.'));
     }
   }
+
+  Future<void> deleteBook(int bookId, int topicId) async {
+    try {
+      await _booksRepository.deleteBook(bookId);
+      await loadBooks(topicId);
+    } catch (e) {
+      emit(TopicsDetailError(message: 'Erro ao deletar livro.'));
+    }
+  }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/topics/cubit/topics_cubit.dart';
-import 'package:stodo/app/topics/pages/topics_detail.dart';
-import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/states/topics_states.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/components/cards/topic_card.dart';
@@ -12,12 +10,12 @@ import 'package:stodo/core/components/layout/animated_grid_view.dart';
 import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/components/states/skeletons/topic_card_skeleton.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
+import 'package:stodo/core/models/topic_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 
 import '../../../core/themes/spacing.dart';
-import '../../library/repository/books_repository.dart';
-import '../cubit/topics_detail_cubit.dart';
 
 class TopicsPage extends StatefulWidget {
   const TopicsPage({super.key});
@@ -41,103 +39,94 @@ class _TopicsPageState extends State<TopicsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TopicsCubit(TopicsRepository())..loadTopics(),
-      child: Builder(
-        builder: (context) {
-          return Scaffold(
-            backgroundColor: AppColors.primaryDark,
-            appBar: AppBar(
-              centerTitle: false,
-              title: Text(
-                "Tópicos",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                    size: AppSpacing.s24
-                  ),
-                  onPressed: () {
-                    final topicCubit = context.read<TopicsCubit>(); 
-                    showCreateTopicBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return CreateTopicBottomSheet(
-                          onTopicCreate: (topic) {
-                            topicCubit.addTopic(topic);
-                          },
-                        );
-                      }
-                    );
-                  }
-                ),
-              ],
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1),
-                child: Container(color: Colors.white10, height: 1),
-              ),
-            ),
-            body: BlocBuilder<TopicsCubit, TopicsState>(
-              builder: (context, state) {
-                if (state is TopicsLoadingState) {
-                  return topicsLoadingView();
-                }
+    return Scaffold(
+      backgroundColor: AppColors.primaryDark,
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(
+          "Tópicos",
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, size: AppSpacing.s24),
+            onPressed: () {
+              final topicCubit = context.read<TopicsCubit>();
+              showCreateTopicBottomSheet(
+                context: context,
+                builder: (context) {
+                  return CreateTopicBottomSheet(
+                    onTopicCreate: (topic) {
+                      topicCubit.addTopic(topic);
+                      context.read<DashboardCubit>().loadDashboard();
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: Colors.white10, height: 1),
+        ),
+      ),
+      body: BlocBuilder<TopicsCubit, TopicsState>(
+        builder: (context, state) {
+          if (state is TopicsLoadingState) {
+            return topicsLoadingView();
+          }
 
-                if (state is TopicsErrorState) {
-                  return Center(child: Text(state.message));
-                }
+          if (state is TopicsErrorState) {
+            return Center(child: Text(state.message));
+          }
 
-                if (state is TopicsSuccessState) {
-                  if (state.topicsProgress.isEmpty) {
-                    return HomeEmptyStateCard(
-                      icon: Icons.menu_book,
-                      title: 'Você ainda não criou tópicos',
-                      subtitle:
-                          'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
-                      buttonText: 'Criar Tópico',
-                      onPressed: () {
-                        final topicCubit = context.read<TopicsCubit>();
-                        showCreateTopicBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return CreateTopicBottomSheet(
-                              onTopicCreate: (topic) {
-                                topicCubit.addTopic(topic);
-                              },
-                            );
-                          }
-                        );
-                      },
-                    );
-                  } else {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextField(
-                              hint: 'Pesquisar Tópicos',
-                              prefixIcon: Icon(Icons.search),
-                              onChanged: (value) {
-                                context.read<TopicsCubit>().onSearchChanged(value);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.s16),
-                            topicProgressSection(state.topicsProgress),
-                          ],
-                        ),
+          if (state is TopicsSuccessState) {
+            if (state.topicsProgress.isEmpty) {
+              return HomeEmptyStateCard(
+                icon: Icons.menu_book,
+                title: 'Você ainda não criou tópicos',
+                subtitle:
+                    'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
+                buttonText: 'Criar Tópico',
+                onPressed: () {
+                  final topicCubit = context.read<TopicsCubit>();
+                  showCreateTopicBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return CreateTopicBottomSheet(
+                        onTopicCreate: (topic) {
+                          topicCubit.addTopic(topic);
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.s16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        hint: 'Pesquisar Tópicos',
+                        prefixIcon: Icon(Icons.search),
+                        onChanged: (value) {
+                          context.read<TopicsCubit>().onSearchChanged(value);
+                        },
                       ),
-                    );
-                  }
-                }
+                      const SizedBox(height: AppSpacing.s16),
+                      topicProgressSection(state.topicsProgress),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
 
-                return const SizedBox.shrink();
-              },
-            ),
-          );
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -163,15 +152,56 @@ class _TopicsPageState extends State<TopicsPage> {
                       totalRead: topic.totalRead,
                       resourcesCount: topic.totalPages,
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (_) => TopicsDetailCubit(BooksRepository())..loadBooks(topic.id),
-                              child: TopicsDetailPage(topic: topic),
+                          '/topic-detail',
+                          arguments: topic,
+                        );
+                      },
+                      onEdit: () {
+                        CreateTopicBottomSheet.show(
+                          context,
+                          existingTopic: TopicModel(
+                            id: topic.id,
+                            name: topic.name,
+                            iconId: topic.iconId,
+                            colorHex: topic.colorHex,
+                          ),
+                          onTopicCreate: (updated) {
+                            context.read<TopicsCubit>().updateTopic(updated);
+                            context.read<DashboardCubit>().loadDashboard();
+                          },
+                        );
+                      },
+                      onDelete: () async {
+                        final cubit = context.read<TopicsCubit>();
+                        final dashCubit = context.read<DashboardCubit>();
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Deletar Tópico'),
+                            content: Text(
+                              'Deseja deletar "${topic.name}"? Os livros associados não serão removidos.',
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text(
+                                  'Deletar',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
                           ),
                         );
+                        if (confirm == true) {
+                          cubit.deleteTopic(topic.id);
+                          dashCubit.loadDashboard();
+                        }
                       },
                     );
                   }).toList(),

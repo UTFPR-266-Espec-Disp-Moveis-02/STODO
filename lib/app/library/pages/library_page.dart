@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/library/cubit/library_cubit.dart';
-import 'package:stodo/app/library/pages/create_update_book_page.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/library_states.dart';
 import 'package:stodo/app/library/widgets/book_progress_modal.dart';
@@ -36,14 +37,19 @@ class _LibraryPageState extends State<LibraryPage>
     int? id,
   ]) async {
     final cubit = context.read<LibraryCubit>();
+    final dashboardCubit = context.read<DashboardCubit>();
+    final topicsCubit = context.read<TopicsCubit>();
 
-    final result = await Navigator.push(
+    final result = await Navigator.pushNamed(
       context,
-      MaterialPageRoute(builder: (_) => CreateUpdateBookPage(id: id)),
+      '/create-update-book',
+      arguments: id != null ? {'id': id} : null,
     );
 
     if (result == true) {
       cubit.fetchBooks();
+      dashboardCubit.loadDashboard();
+      topicsCubit.loadTopics();
     }
   }
 
@@ -151,19 +157,58 @@ class _LibraryPageState extends State<LibraryPage>
                                     context,
                                     book,
                                     onSave: (newStatus, newPage) {
-                                      context.read<LibraryCubit>().updateBookProgress(
-                                        book.id!,
-                                        newStatus,
-                                        newPage,
-                                      );
+                                      context
+                                          .read<LibraryCubit>()
+                                          .updateBookProgress(
+                                            book.id!,
+                                            newStatus,
+                                            newPage,
+                                          );
+                                      context
+                                          .read<DashboardCubit>()
+                                          .loadDashboard();
+                                      context.read<TopicsCubit>().loadTopics();
                                     },
                                   ),
                                   onEdit: () => _navigateToCreateUpdateBook(
                                     context,
                                     book.id,
                                   ),
-                                  onRemove: () {
-                                    context.read<LibraryCubit>().deleteBook(book.id!);
+                                  onRemove: () async {
+                                    final cubit = context.read<LibraryCubit>();
+                                    final dashCubit = context.read<DashboardCubit>();
+                                    final topCubit = context.read<TopicsCubit>();
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Remover Livro'),
+                                        content: Text(
+                                          'Deseja remover "${book.title}"?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, false),
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, true),
+                                            child: const Text(
+                                              'Remover',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirm == true) {
+                                      cubit.deleteBook(book.id!);
+                                      dashCubit.loadDashboard();
+                                      topCubit.loadTopics();
+                                    }
                                   },
                                 );
                               },

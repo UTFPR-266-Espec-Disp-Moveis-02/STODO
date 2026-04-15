@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
+import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/helpers/colors_helper.dart';
 import 'package:stodo/core/models/book_model.dart';
+import 'package:stodo/core/models/topic_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 import 'package:stodo/core/themes/spacing.dart';
 
 import '../../../core/components/cards/book_list_card.dart';
 import '../../../core/components/form/icon_selector.dart';
-import '../../library/pages/create_update_book_page.dart';
 import '../cubit/topics_detail_cubit.dart';
 import '../states/topics_detail_state.dart';
 
@@ -33,15 +37,20 @@ class TopicsDetailPage extends StatelessWidget {
     int? bookId,
   }) async {
     if (!context.mounted) return;
-    final result = await Navigator.push(
+    final detailCubit = context.read<TopicsDetailCubit>();
+    final dashboardCubit = context.read<DashboardCubit>();
+    final topicsCubit = context.read<TopicsCubit>();
+
+    final result = await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => CreateUpdateBookPage(id: bookId, topicId: topic.id),
-      ),
+      '/create-update-book',
+      arguments: {'id': bookId, 'topicId': topic.id},
     );
 
-    if (result == true && context.mounted) {
-      context.read<TopicsDetailCubit>().loadBooks(topic.id);
+    if (result == true) {
+      detailCubit.loadBooks(topic.id);
+      dashboardCubit.loadDashboard();
+      topicsCubit.loadTopics();
     }
   }
 
@@ -64,7 +73,7 @@ class TopicsDetailPage extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
-                expandedHeight: 160.0,
+                expandedHeight: 200.0,
                 pinned: true,
                 backgroundColor: AppColors.primaryDark,
                 scrolledUnderElevation: 0,
@@ -81,7 +90,24 @@ class TopicsDetailPage extends StatelessWidget {
                       color: Colors.white70,
                       size: 20,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      CreateTopicBottomSheet.show(
+                        context,
+                        existingTopic: TopicModel(
+                          id: topic.id,
+                          name: topic.name,
+                          iconId: topic.iconId,
+                          colorHex: topic.colorHex,
+                        ),
+                        onTopicCreate: (updated) async {
+                          await TopicsRepository().updateTopic(updated);
+                          if (context.mounted) {
+                            context.read<DashboardCubit>().loadDashboard();
+                            context.read<TopicsCubit>().loadTopics();
+                          }
+                        },
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(
@@ -89,7 +115,38 @@ class TopicsDetailPage extends StatelessWidget {
                       color: Colors.redAccent,
                       size: 22,
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final dashboardCubit = context.read<DashboardCubit>();
+                      final topicsCubit = context.read<TopicsCubit>();
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Deletar Tópico'),
+                          content: Text(
+                            'Deseja deletar "${topic.name}"? Os livros associados não serão removidos.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text(
+                                'Deletar',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        await TopicsRepository().deleteTopic(topic.id);
+                        dashboardCubit.loadDashboard();
+                        topicsCubit.loadTopics();
+                        if (context.mounted) Navigator.pop(context);
+                      }
+                    },
                   ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
@@ -131,6 +188,7 @@ class TopicsDetailPage extends StatelessWidget {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   topic.name,
@@ -151,7 +209,31 @@ class TopicsDetailPage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                if (!isLoading && books.isNotEmpty)
+                                if (!isLoading && books.isNotEmpty) ...[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Progresso Geral',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${(_calculateOverallProgress(books) * 100).toInt()}%',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: LinearProgressIndicator(
@@ -166,6 +248,7 @@ class TopicsDetailPage extends StatelessWidget {
                                           ),
                                     ),
                                   ),
+                                ],
                               ],
                             ),
                           ),
@@ -264,17 +347,54 @@ class TopicsDetailPage extends StatelessWidget {
               currentPage: book.currentPage,
               totalPages: book.totalPages,
               onTap: () async {
-                await Navigator.pushNamed(
+                final detailCubit = context.read<TopicsDetailCubit>();
+                final dashboardCubit = context.read<DashboardCubit>();
+                final topicsCubit = context.read<TopicsCubit>();
+                final result = await Navigator.pushNamed(
                   context,
                   '/book-details',
-                  arguments: book.id,
+                  arguments: book,
                 );
-                if (!context.mounted) return;
-                context.read<TopicsDetailCubit>().loadBooks(topic.id);
+                if (result == true) {
+                  detailCubit.loadBooks(topic.id);
+                  dashboardCubit.loadDashboard();
+                  topicsCubit.loadTopics();
+                }
               },
               onEdit: () =>
                   _navigateToCreateUpdateBook(context, bookId: book.id),
-              onRemove: () {},
+              onRemove: () async {
+                final cubit = context.read<TopicsDetailCubit>();
+                final dashboardCubit = context.read<DashboardCubit>();
+                final topicsCubit = context.read<TopicsCubit>();
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Remover Livro'),
+                    content: Text(
+                      'Deseja remover "${book.title}" deste tópico?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text(
+                          'Remover',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  cubit.deleteBook(book.id!, topic.id);
+                  dashboardCubit.loadDashboard();
+                  topicsCubit.loadTopics();
+                }
+              },
             ),
           );
         }, childCount: booksList.length),

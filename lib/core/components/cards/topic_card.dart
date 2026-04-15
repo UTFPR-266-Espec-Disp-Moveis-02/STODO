@@ -16,6 +16,8 @@ class TopicCard extends StatelessWidget {
   final int resourcesCount;
   final double progress; // 0.0 to 1.0
   final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const TopicCard({
     super.key,
@@ -25,6 +27,8 @@ class TopicCard extends StatelessWidget {
     required this.totalRead,
     required this.resourcesCount,
     this.onTap,
+    this.onEdit,
+    this.onDelete,
   }) : colorStr = '',
        progress = resourcesCount > 0 ? totalRead / resourcesCount : 0.0;
 
@@ -36,6 +40,8 @@ class TopicCard extends StatelessWidget {
     required int totalRead,
     required int resourcesCount,
     VoidCallback? onTap,
+    VoidCallback? onEdit,
+    VoidCallback? onDelete,
   }) {
     return TopicCard(
       key: key,
@@ -47,6 +53,8 @@ class TopicCard extends StatelessWidget {
       totalRead: totalRead,
       resourcesCount: resourcesCount,
       onTap: onTap,
+      onEdit: onEdit,
+      onDelete: onDelete,
     );
   }
 
@@ -75,14 +83,55 @@ class TopicCard extends StatelessWidget {
               mainAxisSize:
                   MainAxisSize.min, // Se adapta ao conteúdo em flex/grids
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(AppSpacing.s12),
-                  ),
-                  child: Icon(icon, color: color, size: 24),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(AppSpacing.s12),
+                      ),
+                      child: Icon(icon, color: color, size: 24),
+                    ),
+                    if (onEdit != null || onDelete != null) ...[
+                      const Spacer(),
+                      PopupMenuButton<String>(
+                        padding: EdgeInsets.zero,
+                        iconSize: 18,
+                        color: AppColors.primaryMedium,
+                        onSelected: (value) {
+                          if (value == 'edit') onEdit?.call();
+                          if (value == 'delete') onDelete?.call();
+                        },
+                        itemBuilder: (_) => [
+                          if (onEdit != null)
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, size: 16),
+                                  SizedBox(width: 8),
+                                  Text('Editar'),
+                                ],
+                              ),
+                            ),
+                          if (onDelete != null)
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, size: 16, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text('Deletar', style: TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
                 const Spacer(), // Ocupa espaço restante (ótimo para GridView)
                 Text(
