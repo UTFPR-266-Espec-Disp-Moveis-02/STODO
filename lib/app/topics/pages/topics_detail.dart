@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/core/helpers/colors_helper.dart';
+import 'package:stodo/core/models/book_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 import 'package:stodo/core/themes/spacing.dart';
+
 import '../../../core/components/cards/book_list_card.dart';
 import '../../../core/components/form/icon_selector.dart';
-import 'package:stodo/core/models/book_model.dart';
-import 'package:stodo/core/helpers/colors_helper.dart';
 import '../../library/pages/create_update_book_page.dart';
 import '../cubit/topics_detail_cubit.dart';
 import '../states/topics_detail_state.dart';
@@ -27,18 +28,19 @@ class TopicsDetailPage extends StatelessWidget {
     return totalPages == 0 ? 0.0 : totalRead / totalPages;
   }
 
-  Future<void> _navigateToCreateUpdateBook(BuildContext context, {int? bookId}) async {
+  Future<void> _navigateToCreateUpdateBook(
+    BuildContext context, {
+    int? bookId,
+  }) async {
+    if (!context.mounted) return;
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CreateUpdateBookPage(
-          id: bookId,
-          topicId: topic.id,
-        ),
+        builder: (_) => CreateUpdateBookPage(id: bookId, topicId: topic.id),
       ),
     );
 
-    if (result == true) {
+    if (result == true && context.mounted) {
       context.read<TopicsDetailCubit>().loadBooks(topic.id);
     }
   }
@@ -74,11 +76,19 @@ class TopicsDetailPage extends StatelessWidget {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white70, size: 20),
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.white70,
+                      size: 20,
+                    ),
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 22),
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.redAccent,
+                      size: 22,
+                    ),
                     onPressed: () {},
                   ),
                 ],
@@ -86,7 +96,12 @@ class TopicsDetailPage extends StatelessWidget {
                   collapseMode: CollapseMode.pin,
                   background: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSpacing.s24, kToolbarHeight + AppSpacing.s16, AppSpacing.s24, 0),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.s24,
+                        kToolbarHeight + AppSpacing.s16,
+                        AppSpacing.s24,
+                        0,
+                      ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -142,8 +157,13 @@ class TopicsDetailPage extends StatelessWidget {
                                     child: LinearProgressIndicator(
                                       value: _calculateOverallProgress(books),
                                       minHeight: 6,
-                                      backgroundColor: Colors.white.withValues(alpha: 0.1),
-                                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                                      backgroundColor: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                            Colors.white,
+                                          ),
                                     ),
                                   ),
                               ],
@@ -158,19 +178,31 @@ class TopicsDetailPage extends StatelessWidget {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.s24, 0, AppSpacing.s24, AppSpacing.s2),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s24,
+                    0,
+                    AppSpacing.s24,
+                    AppSpacing.s2,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         'Livros Vinculados',
-                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       TextButton(
                         onPressed: () => _navigateToCreateUpdateBook(context),
                         child: const Text(
                           '+ Adicionar',
-                          style: TextStyle(color: AppColors.blueAccent, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: AppColors.blueAccent,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -184,19 +216,26 @@ class TopicsDetailPage extends StatelessWidget {
                 )
               else if (state is TopicsDetailError)
                 SliverFillRemaining(
-                  child: Center(child: Text(state.message, style: const TextStyle(color: Colors.red))),
+                  child: Center(
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
                 )
               else if (books.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(
-                      child: Text(
-                        'Nenhum livro vinculado.',
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+                SliverFillRemaining(
+                  child: Center(
+                    child: Text(
+                      'Nenhum livro vinculado.',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
                       ),
                     ),
-                  )
-                else
-                  _buildBookSliverSection(books, topicColor),
+                  ),
+                )
+              else
+                _buildBookSliverSection(books, topicColor),
 
               const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
             ],
@@ -208,31 +247,37 @@ class TopicsDetailPage extends StatelessWidget {
 
   Widget _buildBookSliverSection(List<BookModel> booksList, Color topicColor) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24, vertical: AppSpacing.s8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s24,
+        vertical: AppSpacing.s8,
+      ),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-              (context, index) {
-            final book = booksList[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: BookListCard(
-                title: book.title,
-                author: book.author,
-                status: book.status,
-                imagePath: book.imagePath,
-                currentPage: book.currentPage,
-                totalPages: book.totalPages,
-                onTap: () {
-                  Navigator.pushNamed(context, '/book-details', arguments: book.id)
-                      .then((_) => context.read<TopicsDetailCubit>().loadBooks(topic.id));
-                },
-                onEdit: () => _navigateToCreateUpdateBook(context, bookId: book.id),
-                onRemove: () {},
-              ),
-            );
-          },
-          childCount: booksList.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final book = booksList[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: BookListCard(
+              title: book.title,
+              author: book.author,
+              status: book.status,
+              imagePath: book.imagePath,
+              currentPage: book.currentPage,
+              totalPages: book.totalPages,
+              onTap: () async {
+                await Navigator.pushNamed(
+                  context,
+                  '/book-details',
+                  arguments: book.id,
+                );
+                if (!context.mounted) return;
+                context.read<TopicsDetailCubit>().loadBooks(topic.id);
+              },
+              onEdit: () =>
+                  _navigateToCreateUpdateBook(context, bookId: book.id),
+              onRemove: () {},
+            ),
+          );
+        }, childCount: booksList.length),
       ),
     );
   }
