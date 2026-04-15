@@ -22,6 +22,7 @@ class TopicsPage extends StatefulWidget {
 }
 
 class _TopicsPageState extends State<TopicsPage> {
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,16 +60,30 @@ class _TopicsPageState extends State<TopicsPage> {
             ),
             body: BlocBuilder<TopicsCubit, TopicsState>(
               builder: (context, state) {
+                // MARK: Loading
                 if (state is TopicsLoadingState) {
                   return topicsLoadingView();
                 }
-
+                // MARK: Error
                 if (state is TopicsErrorState) {
                   return Center(child: Text(state.message));
                 }
-
+                // MARK: Success
                 if (state is TopicsSuccessState) {
-                  if (state.topicsProgress.isEmpty) {
+                  final isSearching = state.searchQuery.isNotEmpty;
+
+                  final filteredList = isSearching
+                    ? state.topicsProgress
+                      .where((t) => t.name
+                        .toLowerCase()
+                        .contains(state.searchQuery.toLowerCase()))
+                      .toList()
+                    : state.topicsProgress;
+
+                  final isEmpty = filteredList.isEmpty;
+
+                  // MARK: Empty state sem busca
+                  if (isEmpty && !isSearching) {
                     return HomeEmptyStateCard(
                       icon: Icons.menu_book,
                       title: 'Você ainda não criou tópicos',
@@ -83,29 +98,44 @@ class _TopicsPageState extends State<TopicsPage> {
                         );
                       },
                     );
-                  } else {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.s16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextField(
-                              hint: 'Pesquisar Tópicos',
-                              prefixIcon: Icon(Icons.search),
-                              onChanged: (value) {
-                                context.read<TopicsCubit>().onSearchChanged(value);
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.s16),
-                            topicProgressSection(state.topicsProgress),
-                          ],
-                        ),
-                      ),
-                    );
                   }
-                }
 
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.s16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextField(
+                            controller: _searchController,
+                            hint: 'Pesquisar Tópicos',
+                            prefixIcon: Icon(Icons.search),
+                            onChanged: (value) {
+                              context.read<TopicsCubit>().onSearchChanged(value);
+                            },
+                          ),
+                          const SizedBox(height: AppSpacing.s16),
+                          if (isEmpty && isSearching)
+                            // MARK: Empty state para busca sem resultados
+                            HomeEmptyStateCard(
+                              icon: Icons.search_off,
+                              title: 'Nenhum resultado encontrado',
+                              subtitle: 'Nenhum resultado para "${state.searchQuery}"',
+                              buttonText: 'Limpar busca',
+                              buttonIcon: Icons.clear,
+                              onPressed: () {
+                                _searchController.clear();
+                                context.read<TopicsCubit>().cleanSearchQuery();
+                              },
+                            )
+                          else
+                            // MARK: Lista de tópicos
+                            topicProgressSection(filteredList),
+                        ],
+                      ),
+                    ),
+                  );
+                }
                 return const SizedBox.shrink();
               },
             ),

@@ -11,6 +11,7 @@ import '../form/dashed_border_painter.dart';
 /// Geralmente usado para carrosséis vazios (ex: Meus Livros, Meus Tópicos).
 class HomeEmptyStateCard extends StatelessWidget {
   final IconData icon;
+  final IconData? buttonIcon;
   final String title;
   final String? subtitle;
   final String buttonText;
@@ -19,6 +20,7 @@ class HomeEmptyStateCard extends StatelessWidget {
   const HomeEmptyStateCard({
     super.key,
     required this.icon,
+    this.buttonIcon,
     required this.title,
     this.subtitle,
     required this.buttonText,
@@ -78,7 +80,10 @@ class HomeEmptyStateCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.s24),
             ElevatedButton.icon(
               onPressed: onPressed,
-              icon: const Icon(Icons.add, size: 20),
+              icon: Icon(
+                buttonIcon ?? Icons.add,
+                size: 20
+              ),
               label: Text(buttonText),
             ),
           ],
