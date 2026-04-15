@@ -21,8 +21,8 @@ class TopicsDetailPage extends StatelessWidget {
     int totalRead = 0;
     int totalPages = 0;
     for (var book in books) {
-      totalRead += book.currentPage ?? 0;
-      totalPages += book.totalPages ?? 0;
+      totalRead += book.currentPage;
+      totalPages += book.totalPages;
     }
     return totalPages == 0 ? 0.0 : totalRead / totalPages;
   }
