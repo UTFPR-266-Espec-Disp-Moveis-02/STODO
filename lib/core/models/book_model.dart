@@ -7,6 +7,7 @@ class BookModel {
   final int topicId;
   final String updatedAt;
   final String? imagePath;
+  final String author;
 
   BookModel({
     required this.id,
@@ -16,6 +17,7 @@ class BookModel {
     required this.totalPages,
     required this.topicId,
     required this.updatedAt,
+    required this.author,
     this.imagePath,
   });
 
@@ -29,6 +31,7 @@ class BookModel {
       topicId: map['topic_id'],
       updatedAt: map['updated_at'],
       imagePath: map['image_path'],
+      author: map['author'],
     );
   }
 }

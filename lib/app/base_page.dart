@@ -3,6 +3,7 @@ import 'package:stodo/app/dashboard/pages/home_dashboard_page.dart';
 import 'package:stodo/app/topics/pages/topics_page.dart';
 
 import 'design_system/design_system_page.dart';
+import 'library/pages/library_page.dart';
 
 class BasePage extends StatefulWidget {
   const BasePage({super.key});
@@ -22,16 +23,9 @@ class _BasePageState extends State<BasePage> {
 
   // Lista de páginas mapeadas para os itens do BottomNavigationBar
   List<Widget> get _pages => [
-    HomeDashboardPage(
-      onNavigateToTopics: () => _onTabTapped(1),
-    ),
+    HomeDashboardPage(onNavigateToTopics: () => _onTabTapped(1)),
     TopicsPage(),
-    const Center(
-      child: Text(
-        'Library',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    ),
+    LibraryPage(),
     const DesignSystemPage(),
   ];
 
