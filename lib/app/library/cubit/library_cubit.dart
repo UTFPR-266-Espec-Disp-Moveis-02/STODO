@@ -35,6 +35,28 @@ class LibraryCubit extends Cubit<LibraryStates> {
     });
   }
 
+  Future<void> updateBookProgress(
+    int id,
+    BookStatus status,
+    int currentPage,
+  ) async {
+    try {
+      await repository.updateBookProgress(id, status, currentPage);
+      await fetchBooks();
+    } catch (e) {
+      emit(LibraryError(e.toString()));
+    }
+  }
+
+  Future<void> deleteBook(int id) async {
+    try {
+      await repository.deleteBook(id);
+      await fetchBooks();
+    } catch (e) {
+      emit(LibraryError(e.toString()));
+    }
+  }
+
   Future<void> fetchBooks() async {
     try {
       emit(LibraryLoading());
