@@ -5,6 +5,7 @@ import 'package:stodo/app/dashboard/repository/dashboard_repository.dart';
 import 'package:stodo/app/library/pages/book_details_page.dart';
 import 'package:stodo/app/library/pages/create_update_book_page.dart';
 import 'package:stodo/app/library/repository/books_repository.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
 import 'package:stodo/app/topics/cubit/topics_detail_cubit.dart';
 import 'package:stodo/app/topics/pages/topics_detail.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
@@ -27,9 +28,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DashboardCubit(DashboardRepository(), TopicsRepository())
-        ..loadDashboard(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              DashboardCubit(DashboardRepository(), TopicsRepository())
+                ..loadDashboard(),
+        ),
+        BlocProvider(
+          create: (_) => TopicsCubit(TopicsRepository())..loadTopics(),
+        ),
+      ],
       child: MaterialApp(
         title: 'STodo',
         theme: AppDarkTheme.darkTheme,
@@ -67,7 +76,7 @@ class MyApp extends StatelessWidget {
             return null;
         }
       },
-    ),
+      ),
     );
   }
 }

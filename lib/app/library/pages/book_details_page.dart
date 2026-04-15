@@ -4,6 +4,7 @@ import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/library/cubit/book_progress_cubit.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/book_progress_states.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
 import 'package:stodo/core/components/buttons/primary_button.dart';
 import 'package:stodo/core/components/form/custom_dropdown.dart';
 import 'package:stodo/core/components/form/progress_updater.dart';
@@ -30,6 +31,8 @@ class BookDetailsPage extends StatelessWidget {
               state.currentPage,
             );
             if (context.mounted) {
+              context.read<DashboardCubit>().loadDashboard();
+              context.read<TopicsCubit>().loadTopics();
               Navigator.pop(context, true);
             }
           } else if (state is BookProgressError) {
@@ -62,8 +65,9 @@ class BookDetailsPage extends StatelessWidget {
                 BlocBuilder<BookProgressCubit, BookProgressState>(
                   buildWhen: (_, curr) => curr is BookProgressIdle,
                   builder: (context, state) {
-                    final currentStatus =
-                        state is BookProgressIdle ? state.status : book.status;
+                    final currentStatus = state is BookProgressIdle
+                        ? state.status
+                        : book.status;
                     return CustomDropdown<BookStatus>(
                       label: 'Status da leitura',
                       value: currentStatus,
@@ -72,7 +76,11 @@ class BookDetailsPage extends StatelessWidget {
                           value: s,
                           child: Row(
                             children: [
-                              Icon(s.icon, color: s.color, size: AppSpacing.s16),
+                              Icon(
+                                s.icon,
+                                color: s.color,
+                                size: AppSpacing.s16,
+                              ),
                               const SizedBox(width: AppSpacing.s8),
                               Text(s.label),
                             ],

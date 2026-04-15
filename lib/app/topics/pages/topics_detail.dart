@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
 import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/helpers/colors_helper.dart';
@@ -38,6 +39,7 @@ class TopicsDetailPage extends StatelessWidget {
     if (!context.mounted) return;
     final detailCubit = context.read<TopicsDetailCubit>();
     final dashboardCubit = context.read<DashboardCubit>();
+    final topicsCubit = context.read<TopicsCubit>();
 
     final result = await Navigator.pushNamed(
       context,
@@ -48,6 +50,7 @@ class TopicsDetailPage extends StatelessWidget {
     if (result == true) {
       detailCubit.loadBooks(topic.id);
       dashboardCubit.loadDashboard();
+      topicsCubit.loadTopics();
     }
   }
 
@@ -100,6 +103,7 @@ class TopicsDetailPage extends StatelessWidget {
                           await TopicsRepository().updateTopic(updated);
                           if (context.mounted) {
                             context.read<DashboardCubit>().loadDashboard();
+                            context.read<TopicsCubit>().loadTopics();
                           }
                         },
                       );
@@ -113,6 +117,7 @@ class TopicsDetailPage extends StatelessWidget {
                     ),
                     onPressed: () async {
                       final dashboardCubit = context.read<DashboardCubit>();
+                      final topicsCubit = context.read<TopicsCubit>();
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
@@ -138,6 +143,7 @@ class TopicsDetailPage extends StatelessWidget {
                       if (confirm == true) {
                         await TopicsRepository().deleteTopic(topic.id);
                         dashboardCubit.loadDashboard();
+                        topicsCubit.loadTopics();
                         if (context.mounted) Navigator.pop(context);
                       }
                     },
@@ -342,6 +348,7 @@ class TopicsDetailPage extends StatelessWidget {
               onTap: () async {
                 final detailCubit = context.read<TopicsDetailCubit>();
                 final dashboardCubit = context.read<DashboardCubit>();
+                final topicsCubit = context.read<TopicsCubit>();
                 final result = await Navigator.pushNamed(
                   context,
                   '/book-details',
@@ -350,6 +357,7 @@ class TopicsDetailPage extends StatelessWidget {
                 if (result == true) {
                   detailCubit.loadBooks(topic.id);
                   dashboardCubit.loadDashboard();
+                  topicsCubit.loadTopics();
                 }
               },
               onEdit: () =>
@@ -357,6 +365,7 @@ class TopicsDetailPage extends StatelessWidget {
               onRemove: () async {
                 final cubit = context.read<TopicsDetailCubit>();
                 final dashboardCubit = context.read<DashboardCubit>();
+                final topicsCubit = context.read<TopicsCubit>();
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -382,6 +391,7 @@ class TopicsDetailPage extends StatelessWidget {
                 if (confirm == true) {
                   cubit.deleteBook(book.id!, topic.id);
                   dashboardCubit.loadDashboard();
+                  topicsCubit.loadTopics();
                 }
               },
             ),

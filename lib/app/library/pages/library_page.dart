@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/library/cubit/library_cubit.dart';
+import 'package:stodo/app/topics/cubit/topics_cubit.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/library_states.dart';
 import 'package:stodo/app/library/widgets/book_progress_modal.dart';
@@ -37,6 +38,7 @@ class _LibraryPageState extends State<LibraryPage>
   ]) async {
     final cubit = context.read<LibraryCubit>();
     final dashboardCubit = context.read<DashboardCubit>();
+    final topicsCubit = context.read<TopicsCubit>();
 
     final result = await Navigator.pushNamed(
       context,
@@ -47,6 +49,7 @@ class _LibraryPageState extends State<LibraryPage>
     if (result == true) {
       cubit.fetchBooks();
       dashboardCubit.loadDashboard();
+      topicsCubit.loadTopics();
     }
   }
 
@@ -154,12 +157,17 @@ class _LibraryPageState extends State<LibraryPage>
                                     context,
                                     book,
                                     onSave: (newStatus, newPage) {
-                                      context.read<LibraryCubit>().updateBookProgress(
-                                        book.id!,
-                                        newStatus,
-                                        newPage,
-                                      );
-                                      context.read<DashboardCubit>().loadDashboard();
+                                      context
+                                          .read<LibraryCubit>()
+                                          .updateBookProgress(
+                                            book.id!,
+                                            newStatus,
+                                            newPage,
+                                          );
+                                      context
+                                          .read<DashboardCubit>()
+                                          .loadDashboard();
+                                      context.read<TopicsCubit>().loadTopics();
                                     },
                                   ),
                                   onEdit: () => _navigateToCreateUpdateBook(
@@ -168,6 +176,8 @@ class _LibraryPageState extends State<LibraryPage>
                                   ),
                                   onRemove: () async {
                                     final cubit = context.read<LibraryCubit>();
+                                    final dashCubit = context.read<DashboardCubit>();
+                                    final topCubit = context.read<TopicsCubit>();
                                     final confirm = await showDialog<bool>(
                                       context: context,
                                       builder: (_) => AlertDialog(
@@ -186,7 +196,9 @@ class _LibraryPageState extends State<LibraryPage>
                                                 Navigator.pop(context, true),
                                             child: const Text(
                                               'Remover',
-                                              style: TextStyle(color: Colors.red),
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -194,7 +206,8 @@ class _LibraryPageState extends State<LibraryPage>
                                     );
                                     if (confirm == true) {
                                       cubit.deleteBook(book.id!);
-                                      context.read<DashboardCubit>().loadDashboard();
+                                      dashCubit.loadDashboard();
+                                      topCubit.loadTopics();
                                     }
                                   },
                                 );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stodo/app/topics/cubit/topics_cubit.dart';
-import 'package:stodo/app/topics/repository/topics_repository.dart';
 import 'package:stodo/app/topics/states/topics_states.dart';
 import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/components/cards/topic_card.dart';
@@ -11,6 +10,7 @@ import 'package:stodo/core/components/layout/animated_grid_view.dart';
 import 'package:stodo/core/components/states/home_empty_state_card.dart';
 import 'package:stodo/core/components/states/skeletons/skeleton.dart';
 import 'package:stodo/core/components/states/skeletons/topic_card_skeleton.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/core/models/topic_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
@@ -39,11 +39,7 @@ class _TopicsPageState extends State<TopicsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TopicsCubit(TopicsRepository())..loadTopics(),
-      child: Builder(
-        builder: (context) {
-          return Scaffold(
+    return Scaffold(
             backgroundColor: AppColors.primaryDark,
             appBar: AppBar(
               centerTitle: false,
@@ -65,6 +61,7 @@ class _TopicsPageState extends State<TopicsPage> {
                         return CreateTopicBottomSheet(
                           onTopicCreate: (topic) {
                             topicCubit.addTopic(topic);
+                            context.read<DashboardCubit>().loadDashboard();
                           },
                         );
                       }
@@ -135,9 +132,6 @@ class _TopicsPageState extends State<TopicsPage> {
                 return const SizedBox.shrink();
               },
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -178,11 +172,13 @@ class _TopicsPageState extends State<TopicsPage> {
                           ),
                           onTopicCreate: (updated) {
                             context.read<TopicsCubit>().updateTopic(updated);
+                            context.read<DashboardCubit>().loadDashboard();
                           },
                         );
                       },
                       onDelete: () async {
                         final cubit = context.read<TopicsCubit>();
+                        final dashCubit = context.read<DashboardCubit>();
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -205,8 +201,9 @@ class _TopicsPageState extends State<TopicsPage> {
                             ],
                           ),
                         );
-                        if (confirm == true) {
+                        if (confirm == true ) {
                           cubit.deleteTopic(topic.id);
+                          context.read<DashboardCubit>().loadDashboard();
                         }
                       },
                     );
