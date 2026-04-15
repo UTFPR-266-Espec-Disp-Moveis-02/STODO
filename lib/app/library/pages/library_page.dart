@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
 import 'package:stodo/app/library/cubit/library_cubit.dart';
 import 'package:stodo/app/library/repository/library_repository.dart';
 import 'package:stodo/app/library/states/library_states.dart';
@@ -35,6 +36,7 @@ class _LibraryPageState extends State<LibraryPage>
     int? id,
   ]) async {
     final cubit = context.read<LibraryCubit>();
+    final dashboardCubit = context.read<DashboardCubit>();
 
     final result = await Navigator.pushNamed(
       context,
@@ -44,6 +46,7 @@ class _LibraryPageState extends State<LibraryPage>
 
     if (result == true) {
       cubit.fetchBooks();
+      dashboardCubit.loadDashboard();
     }
   }
 
@@ -156,6 +159,7 @@ class _LibraryPageState extends State<LibraryPage>
                                         newStatus,
                                         newPage,
                                       );
+                                      context.read<DashboardCubit>().loadDashboard();
                                     },
                                   ),
                                   onEdit: () => _navigateToCreateUpdateBook(
@@ -190,6 +194,7 @@ class _LibraryPageState extends State<LibraryPage>
                                     );
                                     if (confirm == true) {
                                       cubit.deleteBook(book.id!);
+                                      context.read<DashboardCubit>().loadDashboard();
                                     }
                                   },
                                 );

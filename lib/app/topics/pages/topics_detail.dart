@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stodo/app/dashboard/cubit/dashboard_cubit.dart';
+import 'package:stodo/app/topics/repository/topics_repository.dart';
+import 'package:stodo/app/topics/widgets/create_topic_bottom_sheet.dart';
 import 'package:stodo/core/helpers/colors_helper.dart';
 import 'package:stodo/core/models/book_model.dart';
+import 'package:stodo/core/models/topic_model.dart';
 import 'package:stodo/core/models/topic_progress_model.dart';
 import 'package:stodo/core/themes/colors.dart';
 import 'package:stodo/core/themes/spacing.dart';
@@ -32,14 +36,18 @@ class TopicsDetailPage extends StatelessWidget {
     int? bookId,
   }) async {
     if (!context.mounted) return;
+    final detailCubit = context.read<TopicsDetailCubit>();
+    final dashboardCubit = context.read<DashboardCubit>();
+
     final result = await Navigator.pushNamed(
       context,
       '/create-update-book',
       arguments: {'id': bookId, 'topicId': topic.id},
     );
 
-    if (result == true && context.mounted) {
-      context.read<TopicsDetailCubit>().loadBooks(topic.id);
+    if (result == true) {
+      detailCubit.loadBooks(topic.id);
+      dashboardCubit.loadDashboard();
     }
   }
 
@@ -79,7 +87,23 @@ class TopicsDetailPage extends StatelessWidget {
                       color: Colors.white70,
                       size: 20,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      CreateTopicBottomSheet.show(
+                        context,
+                        existingTopic: TopicModel(
+                          id: topic.id,
+                          name: topic.name,
+                          iconId: topic.iconId,
+                          colorHex: topic.colorHex,
+                        ),
+                        onTopicCreate: (updated) async {
+                          await TopicsRepository().updateTopic(updated);
+                          if (context.mounted) {
+                            context.read<DashboardCubit>().loadDashboard();
+                          }
+                        },
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(
@@ -87,7 +111,36 @@ class TopicsDetailPage extends StatelessWidget {
                       color: Colors.redAccent,
                       size: 22,
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final dashboardCubit = context.read<DashboardCubit>();
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Deletar Tópico'),
+                          content: Text(
+                            'Deseja deletar "${topic.name}"? Os livros associados não serão removidos.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text(
+                                'Deletar',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        await TopicsRepository().deleteTopic(topic.id);
+                        dashboardCubit.loadDashboard();
+                        if (context.mounted) Navigator.pop(context);
+                      }
+                    },
                   ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
@@ -149,7 +202,31 @@ class TopicsDetailPage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                if (!isLoading && books.isNotEmpty)
+                                if (!isLoading && books.isNotEmpty) ...[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Progresso Geral',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${(_calculateOverallProgress(books) * 100).toInt()}%',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: LinearProgressIndicator(
@@ -164,6 +241,7 @@ class TopicsDetailPage extends StatelessWidget {
                                           ),
                                     ),
                                   ),
+                                ],
                               ],
                             ),
                           ),
@@ -262,20 +340,23 @@ class TopicsDetailPage extends StatelessWidget {
               currentPage: book.currentPage,
               totalPages: book.totalPages,
               onTap: () async {
+                final detailCubit = context.read<TopicsDetailCubit>();
+                final dashboardCubit = context.read<DashboardCubit>();
                 final result = await Navigator.pushNamed(
                   context,
                   '/book-details',
                   arguments: book,
                 );
-                if (!context.mounted) return;
                 if (result == true) {
-                  context.read<TopicsDetailCubit>().loadBooks(topic.id);
+                  detailCubit.loadBooks(topic.id);
+                  dashboardCubit.loadDashboard();
                 }
               },
               onEdit: () =>
                   _navigateToCreateUpdateBook(context, bookId: book.id),
               onRemove: () async {
                 final cubit = context.read<TopicsDetailCubit>();
+                final dashboardCubit = context.read<DashboardCubit>();
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -300,6 +381,7 @@ class TopicsDetailPage extends StatelessWidget {
                 );
                 if (confirm == true) {
                   cubit.deleteBook(book.id!, topic.id);
+                  dashboardCubit.loadDashboard();
                 }
               },
             ),
