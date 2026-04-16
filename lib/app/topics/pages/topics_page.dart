@@ -25,18 +25,6 @@ class TopicsPage extends StatefulWidget {
 }
 
 class _TopicsPageState extends State<TopicsPage> {
-  Future<void> showCreateTopicBottomSheet({
-    required BuildContext context,
-    required Widget Function(BuildContext) builder,
-  }) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: builder,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,15 +40,11 @@ class _TopicsPageState extends State<TopicsPage> {
             icon: const Icon(Icons.add, size: AppSpacing.s24),
             onPressed: () {
               final topicCubit = context.read<TopicsCubit>();
-              showCreateTopicBottomSheet(
-                context: context,
-                builder: (context) {
-                  return CreateTopicBottomSheet(
-                    onTopicCreate: (topic) {
-                      topicCubit.addTopic(topic);
-                      context.read<DashboardCubit>().loadDashboard();
-                    },
-                  );
+              CreateTopicBottomSheet.show(
+                context,
+                onTopicCreate: (topic) {
+                  topicCubit.addTopic(topic);
+                  context.read<DashboardCubit>().loadDashboard();
                 },
               );
             },
@@ -91,14 +75,11 @@ class _TopicsPageState extends State<TopicsPage> {
                 buttonText: 'Criar Tópico',
                 onPressed: () {
                   final topicCubit = context.read<TopicsCubit>();
-                  showCreateTopicBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return CreateTopicBottomSheet(
-                        onTopicCreate: (topic) {
-                          topicCubit.addTopic(topic);
-                        },
-                      );
+                  CreateTopicBottomSheet.show(
+                    context,
+                    onTopicCreate: (topic) {
+                      topicCubit.addTopic(topic);
+                      context.read<DashboardCubit>().loadDashboard();
                     },
                   );
                 },
