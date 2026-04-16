@@ -1,14 +1,8 @@
 name: Release App
 
 on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Versão da release (ex: 1.0.0 ou v1.0.0)'
-        required: true
+  release:
+    types: [published]
 
 jobs:
   release:
@@ -20,82 +14,33 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN || github.token }}
-
-      - name: Resolve tag name
-        id: tag_name
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            RAW="${{ github.event.inputs.tag }}"
-          else
-            RAW="${{ github.ref_name }}"
-          fi
-          # Garante prefixo v
-          [[ "$RAW" == v* ]] && TAG="$RAW" || TAG="v$RAW"
-          # Versão sem o v para o pubspec
-          VERSION="${TAG#v}"
-          echo "tag=$TAG"         >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Update pubspec.yaml version
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          VERSION="${{ steps.tag_name.outputs.version }}"
-          # Preserva o build number atual, troca só o semver
-          BUILD=$(grep "^version: " pubspec.yaml | cut -d'+' -f2)
-          NEW_LINE="version: $VERSION+$BUILD"
-          sed -i "s/^version: .*/$NEW_LINE/" pubspec.yaml
-          echo "pubspec atualizado para $NEW_LINE"
-
-      - name: Commit pubspec and create tag
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          TAG="${{ steps.tag_name.outputs.tag }}"
-          VERSION="${{ steps.tag_name.outputs.version }}"
-          BUILD=$(grep "^version: " pubspec.yaml | cut -d'+' -f2)
-
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add pubspec.yaml
-          git commit -m "chore: bump version to $VERSION+$BUILD [skip ci]"
-          git tag "$TAG"
-          git push
-          git push origin "$TAG"
 
       - name: Generate Semantic Changelog
         id: changelog
         run: |
-          TAG="${{ steps.tag_name.outputs.tag }}"
-          # Tag existe agora (criada acima ou era push de tag)
+          TAG="${{ github.event.release.tag_name }}"
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || git rev-list --max-parents=0 HEAD)
-          echo "Gerando changelog de $PREVIOUS_TAG até $TAG"
+          echo "Changelog de $PREVIOUS_TAG até $TAG"
 
-          COMMITS=$(git log "$PREVIOUS_TAG..$TAG" --oneline --pretty=format:"%s")
+          COMMITS=$(git log "$PREVIOUS_TAG..$TAG" --pretty=format:"%s")
 
-          FEATURES=$(echo "$COMMITS" | grep -E "^feat(\(.*\))?(!)?:" || true)
-          FIXES=$(echo "$COMMITS" | grep -E "^fix(\(.*\))?(!)?:" || true)
-          BREAKING=$(echo "$COMMITS" | grep -E "(!:)|(BREAKING CHANGE)" || true)
-          OTHERS=$(echo "$COMMITS" | grep -vE "^(feat|fix)(\(.*\))?(!)?:" || true)
+          BREAKING=$(echo "$COMMITS" | grep -E "^[a-zA-Z]+(\([^)]*\))?!:|BREAKING CHANGE" || true)
+          FEATURES=$(echo "$COMMITS" | grep -E "^feat(\([^)]*\))?:" || true)
+          FIXES=$(echo "$COMMITS"    | grep -E "^fix(\([^)]*\))?:"  || true)
+          PERFS=$(echo "$COMMITS"    | grep -E "^perf(\([^)]*\))?:" || true)
+          OTHERS=$(echo "$COMMITS"   | grep -vE "^(feat|fix|perf|chore)(\([^)]*\))?[!:]?" || true)
 
           CHANGELOG="## O que mudou na versão $TAG\n\n"
+          [ -n "$BREAKING"  ] && CHANGELOG+="### ⚠️ Breaking Changes\n$BREAKING\n\n"
+          [ -n "$FEATURES"  ] && CHANGELOG+="### ✨ Novas Funcionalidades\n$FEATURES\n\n"
+          [ -n "$FIXES"     ] && CHANGELOG+="### 🐛 Correções\n$FIXES\n\n"
+          [ -n "$PERFS"     ] && CHANGELOG+="### ⚡ Performance\n$PERFS\n\n"
+          [ -n "$OTHERS"    ] && CHANGELOG+="### 🔧 Outras Alterações\n$OTHERS\n\n"
 
-          if [ -n "$BREAKING" ]; then
-            CHANGELOG="$CHANGELOG### BREAKING CHANGES\n$BREAKING\n\n"
-          fi
-          if [ -n "$FEATURES" ]; then
-            CHANGELOG="$CHANGELOG### Novas Funcionalidades\n$FEATURES\n\n"
-          fi
-          if [ -n "$FIXES" ]; then
-            CHANGELOG="$CHANGELOG### Correcoes\n$FIXES\n\n"
-          fi
-          if [ -n "$OTHERS" ]; then
-            CHANGELOG="$CHANGELOG### Outras Alteracoes\n$OTHERS\n\n"
-          fi
-
-          EOF_DELIMITER=$(dd if=/dev/urandom bs=15 count=1 2>/dev/null | base64 | tr -dc 'a-zA-Z0-9')
-          echo "CHANGELOG<<$EOF_DELIMITER" >> $GITHUB_ENV
-          echo -e "$CHANGELOG"            >> $GITHUB_ENV
-          echo "$EOF_DELIMITER"           >> $GITHUB_ENV
+          DELIM=$(openssl rand -hex 8)
+          echo "CHANGELOG<<$DELIM" >> $GITHUB_ENV
+          echo -e "$CHANGELOG"     >> $GITHUB_ENV
+          echo "$DELIM"            >> $GITHUB_ENV
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -110,14 +55,11 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release
 
-      - name: Create Release and Upload APK
+      - name: Upload APK to Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag_name.outputs.tag }}
-          name: Release ${{ steps.tag_name.outputs.tag }}
+          tag_name: ${{ github.event.release.tag_name }}
           body: ${{ env.CHANGELOG }}
           files: build/app/outputs/flutter-apk/app-release.apk
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
