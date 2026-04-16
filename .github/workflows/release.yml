@@ -25,10 +25,10 @@ jobs:
           COMMITS=$(git log "$PREVIOUS_TAG..$TAG" --pretty=format:"%s")
 
           BREAKING=$(echo "$COMMITS" | grep -E "^[a-zA-Z]+(\([^)]*\))?!:|BREAKING CHANGE" || true)
-          FEATURES=$(echo "$COMMITS" | grep -E "^feat(\([^)]*\))?:" || true)
-          FIXES=$(echo "$COMMITS"    | grep -E "^fix(\([^)]*\))?:"  || true)
-          PERFS=$(echo "$COMMITS"    | grep -E "^perf(\([^)]*\))?:" || true)
-          OTHERS=$(echo "$COMMITS"   | grep -vE "^(feat|fix|perf|chore)(\([^)]*\))?[!:]?" || true)
+          FEATURES=$(echo "$COMMITS" | grep -E "^feat(\([^)]*\))?:"  || true)
+          FIXES=$(echo "$COMMITS"    | grep -E "^fix(\([^)]*\))?:"   || true)
+          PERFS=$(echo "$COMMITS"    | grep -E "^perf(\([^)]*\))?:"  || true)
+          OTHERS=$(echo "$COMMITS"   | grep -vE "^(feat|fix|perf|chore)(\([^)]*\))?" || true)
 
           CHANGELOG="## O que mudou na versão $TAG\n\n"
           [ -n "$BREAKING"  ] && CHANGELOG+="### ⚠️ Breaking Changes\n$BREAKING\n\n"
