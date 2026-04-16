@@ -39,22 +39,23 @@ jobs:
           PATCH=${ADDR[2]}
           
           # Lógica de Versionamento Semântico
-          # Se tiver '!' após o tipo ou 'BREAKING CHANGE' no corpo do commit -> MAJOR
-          if [[ "$COMMIT_MSG" =~ [a-zA-Z0-9]+\(!?\): ]] || [[ "$COMMIT_MSG" =~ [a-zA-Z0-9]+!: ]] || [[ "$COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
-            echo "Detectada BREAKING CHANGE. Incrementando MAJOR version."
+          # MAJOR: tipo! ou BREAKING CHANGE no corpo
+          if [[ "$COMMIT_MSG" =~ ^[a-zA-Z]+(\([^)]*\))?!: ]] || [[ "$COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
+            echo "bump=major" && BUMP_TYPE="major"
             MAJOR=$((MAJOR + 1))
             MINOR=0
             PATCH=0
-          # Se começar com 'feat' -> MINOR
-          elif [[ "$COMMIT_MSG" =~ ^feat(\(.*\))?: ]]; then
-            echo "Detectada nova funcionalidade. Incrementando MINOR version."
+          # MINOR: feat
+          elif [[ "$COMMIT_MSG" =~ ^feat(\([^)]*\))?: ]]; then
+            echo "bump=minor" && BUMP_TYPE="minor"
             MINOR=$((MINOR + 1))
             PATCH=0
-          # Caso contrário (fix, chore, docs, etc) -> PATCH
+          # PATCH: fix, perf, refactor, e qualquer outro
           else
-            echo "Detectada correção ou alteração menor. Incrementando PATCH version."
+            echo "bump=patch" && BUMP_TYPE="patch"
             PATCH=$((PATCH + 1))
           fi
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
           
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
           NEW_LINE="version: $NEW_VERSION+$NEW_BUILD"
