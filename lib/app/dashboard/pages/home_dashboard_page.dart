@@ -180,7 +180,13 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                 subtitle:
                     'Organize seus estudos criando tópicos personalizados para seus livros e cursos.',
                 buttonText: 'Criar Tópico',
-                onPressed: () {},
+                onPressed: () {
+                  final dashboardCubit = context.read<DashboardCubit>();
+                  CreateTopicBottomSheet.show(
+                    context,
+                    onTopicCreate: (topic) => dashboardCubit.addTopic(topic),
+                  );
+                },
               )
             : Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.s12),
